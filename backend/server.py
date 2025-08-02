@@ -1,75 +1,379 @@
-from fastapi import FastAPI, APIRouter
-from dotenv import load_dotenv
-from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
+from fastapi import FastAPI, HTTPException, Request, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from pymongo import MongoClient
+from datetime import datetime, timedelta
 import os
-import logging
-from pathlib import Path
-from pydantic import BaseModel, Field
-from typing import List
 import uuid
-from datetime import datetime
+from typing import List, Optional
+from pydantic import BaseModel, Field
+import json
 
+# Import Stripe integration
+from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
 
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
-
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
-
-# Create the main app without a prefix
 app = FastAPI()
 
-# Create a router with the /api prefix
-api_router = APIRouter(prefix="/api")
-
-
-# Define Models
-class StatusCheck(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
-
-class StatusCheckCreate(BaseModel):
-    client_name: str
-
-# Add your routes to the router instead of directly to app
-@api_router.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.dict()
-    status_obj = StatusCheck(**status_dict)
-    _ = await db.status_checks.insert_one(status_obj.dict())
-    return status_obj
-
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    status_checks = await db.status_checks.find().to_list(1000)
-    return [StatusCheck(**status_check) for status_check in status_checks]
-
-# Include the router in the main app
-app.include_router(api_router)
-
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_credentials=True,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+# MongoDB connection
+MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017/')
+client = MongoClient(MONGO_URL)
+db = client.tatis_cleaners
 
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
+# Collections
+cleaners_collection = db.cleaners
+bookings_collection = db.bookings
+payment_transactions_collection = db.payment_transactions
+
+# Stripe setup
+STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY')
+
+# Data models
+class Cleaner(BaseModel):
+    id: str
+    name: str
+    rating: float
+    experience_years: int
+    specialties: List[str]
+    avatar_url: str
+    available: bool = True
+
+class BookingRequest(BaseModel):
+    service_type: str
+    cleaner_id: str
+    date: str
+    time: str
+    hours: int
+    location: str
+    address: str
+    customer_name: str
+    customer_email: str
+    customer_phone: str
+    special_instructions: Optional[str] = ""
+
+class PaymentRequest(BaseModel):
+    booking_id: str
+    origin_url: str
+
+# Service packages with fixed pricing ($40/hour per cleaner)
+SERVICE_PACKAGES = {
+    "regular_cleaning": {
+        "name": "Regular Cleaning",
+        "description": "Standard house cleaning service",
+        "base_price": 40.0  # per hour
+    },
+    "deep_cleaning": {
+        "name": "Deep Cleaning", 
+        "description": "Thorough deep cleaning service",
+        "base_price": 40.0  # per hour
+    },
+    "move_in_out": {
+        "name": "Move In/Out Cleaning",
+        "description": "Complete cleaning for moving",
+        "base_price": 40.0  # per hour
+    },
+    "janitorial_cleaning": {
+        "name": "Janitorial Cleaning",
+        "description": "Commercial janitorial services", 
+        "base_price": 40.0  # per hour
+    }
+}
+
+# Service areas
+SERVICE_AREAS = [
+    "Tempe", "Chandler", "Gilbert", "Mesa", 
+    "Phoenix", "Glendale", "Scottsdale", "Avondale"
+]
+
+# Initialize sample cleaners
+def init_sample_cleaners():
+    if cleaners_collection.count_documents({}) == 0:
+        sample_cleaners = [
+            {
+                "id": str(uuid.uuid4()),
+                "name": "Maria Rodriguez",
+                "rating": 4.9,
+                "experience_years": 5,
+                "specialties": ["Deep Cleaning", "Regular Cleaning"],
+                "avatar_url": "https://images.unsplash.com/photo-1494790108755-2616b932fc04?w=150&h=150&fit=crop&crop=face",
+                "available": True
+            },
+            {
+                "id": str(uuid.uuid4()),
+                "name": "Sarah Johnson",
+                "rating": 4.8,
+                "experience_years": 3,
+                "specialties": ["Move In/Out", "Regular Cleaning"],
+                "avatar_url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+                "available": True
+            },
+            {
+                "id": str(uuid.uuid4()),
+                "name": "Ana Garcia",
+                "rating": 4.9,
+                "experience_years": 7,
+                "specialties": ["Janitorial", "Deep Cleaning"],
+                "avatar_url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+                "available": True
+            },
+            {
+                "id": str(uuid.uuid4()),
+                "name": "Jessica Martinez",
+                "rating": 4.7,
+                "experience_years": 4,
+                "specialties": ["Regular Cleaning", "Move In/Out"],
+                "avatar_url": "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=150&h=150&fit=crop&crop=face",
+                "available": True
+            }
+        ]
+        cleaners_collection.insert_many(sample_cleaners)
+
+# API Routes
+@app.get("/api/cleaners")
+async def get_cleaners():
+    """Get all available cleaners"""
+    cleaners = list(cleaners_collection.find({"available": True}, {"_id": 0}))
+    return {"cleaners": cleaners}
+
+@app.get("/api/service-areas")
+async def get_service_areas():
+    """Get all service areas"""
+    return {"areas": SERVICE_AREAS}
+
+@app.get("/api/services")
+async def get_services():
+    """Get all service types"""
+    return {"services": SERVICE_PACKAGES}
+
+@app.post("/api/bookings")
+async def create_booking(booking: BookingRequest):
+    """Create a new booking"""
+    try:
+        # Validate service type
+        if booking.service_type not in SERVICE_PACKAGES:
+            raise HTTPException(status_code=400, detail="Invalid service type")
+        
+        # Validate cleaner exists
+        cleaner = cleaners_collection.find_one({"id": booking.cleaner_id})
+        if not cleaner:
+            raise HTTPException(status_code=400, detail="Cleaner not found")
+        
+        # Validate service area
+        if booking.location not in SERVICE_AREAS:
+            raise HTTPException(status_code=400, detail="Service area not supported")
+        
+        # Calculate total amount
+        service_price = SERVICE_PACKAGES[booking.service_type]["base_price"]
+        total_amount = service_price * booking.hours
+        
+        # Create booking
+        booking_id = str(uuid.uuid4())
+        booking_data = {
+            "id": booking_id,
+            "service_type": booking.service_type,
+            "cleaner_id": booking.cleaner_id,
+            "cleaner_name": cleaner["name"],
+            "date": booking.date,
+            "time": booking.time,
+            "hours": booking.hours,
+            "location": booking.location,
+            "address": booking.address,
+            "customer_name": booking.customer_name,
+            "customer_email": booking.customer_email,
+            "customer_phone": booking.customer_phone,
+            "special_instructions": booking.special_instructions,
+            "total_amount": total_amount,
+            "status": "pending_payment",
+            "created_at": datetime.now().isoformat(),
+            "payment_status": "pending"
+        }
+        
+        bookings_collection.insert_one(booking_data)
+        
+        return {
+            "booking_id": booking_id,
+            "total_amount": total_amount,
+            "message": "Booking created successfully"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/checkout/session")
+async def create_checkout_session(payment: PaymentRequest, request: Request):
+    """Create Stripe checkout session for booking payment"""
+    try:
+        # Get booking details
+        booking = bookings_collection.find_one({"id": payment.booking_id})
+        if not booking:
+            raise HTTPException(status_code=404, detail="Booking not found")
+        
+        if booking["payment_status"] == "paid":
+            raise HTTPException(status_code=400, detail="Booking already paid")
+        
+        # Initialize Stripe checkout
+        if not STRIPE_API_KEY:
+            raise HTTPException(status_code=500, detail="Stripe API key not configured")
+        
+        host_url = payment.origin_url
+        webhook_url = f"{host_url}/api/webhook/stripe"
+        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+        
+        # Create checkout session
+        success_url = f"{host_url}?session_id={{CHECKOUT_SESSION_ID}}&booking_id={payment.booking_id}"
+        cancel_url = f"{host_url}?cancelled=true"
+        
+        checkout_request = CheckoutSessionRequest(
+            amount=float(booking["total_amount"]),
+            currency="usd",
+            success_url=success_url,
+            cancel_url=cancel_url,
+            metadata={
+                "booking_id": payment.booking_id,
+                "customer_email": booking["customer_email"],
+                "service_type": booking["service_type"]
+            }
+        )
+        
+        session = await stripe_checkout.create_checkout_session(checkout_request)
+        
+        # Create payment transaction record
+        payment_transaction = {
+            "id": str(uuid.uuid4()),
+            "session_id": session.session_id,
+            "booking_id": payment.booking_id,
+            "amount": float(booking["total_amount"]),
+            "currency": "usd",
+            "payment_status": "pending",
+            "status": "initiated",
+            "customer_email": booking["customer_email"],
+            "created_at": datetime.now().isoformat(),
+            "metadata": checkout_request.metadata
+        }
+        
+        payment_transactions_collection.insert_one(payment_transaction)
+        
+        return {
+            "url": session.url,
+            "session_id": session.session_id
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/checkout/status/{session_id}")
+async def get_checkout_status(session_id: str):
+    """Get payment status for a checkout session"""
+    try:
+        # Get payment transaction
+        transaction = payment_transactions_collection.find_one({"session_id": session_id})
+        if not transaction:
+            raise HTTPException(status_code=404, detail="Payment session not found")
+        
+        # Initialize Stripe checkout
+        if not STRIPE_API_KEY:
+            raise HTTPException(status_code=500, detail="Stripe API key not configured")
+        
+        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
+        
+        # Get status from Stripe  
+        checkout_status = await stripe_checkout.get_checkout_status(session_id)
+        
+        # Update transaction status
+        update_data = {
+            "status": checkout_status.status,
+            "payment_status": checkout_status.payment_status,
+            "updated_at": datetime.now().isoformat()
+        }
+        
+        payment_transactions_collection.update_one(
+            {"session_id": session_id},
+            {"$set": update_data}
+        )
+        
+        # Update booking status if payment successful
+        if checkout_status.payment_status == "paid" and transaction["payment_status"] != "paid":
+            bookings_collection.update_one(
+                {"id": transaction["booking_id"]},
+                {"$set": {
+                    "payment_status": "paid",
+                    "status": "confirmed",
+                    "confirmed_at": datetime.now().isoformat()
+                }}
+            )
+        
+        return {
+            "status": checkout_status.status,
+            "payment_status": checkout_status.payment_status,
+            "amount_total": checkout_status.amount_total,
+            "currency": checkout_status.currency,
+            "booking_id": transaction["booking_id"]
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/webhook/stripe")
+async def stripe_webhook(request: Request):
+    """Handle Stripe webhooks"""
+    try:
+        body = await request.body()
+        signature = request.headers.get("Stripe-Signature")
+        
+        if not STRIPE_API_KEY:
+            raise HTTPException(status_code=500, detail="Stripe API key not configured")
+        
+        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
+        webhook_response = await stripe_checkout.handle_webhook(body, signature)
+        
+        # Process webhook event
+        if webhook_response.event_type == "checkout.session.completed":
+            # Update payment transaction
+            payment_transactions_collection.update_one(
+                {"session_id": webhook_response.session_id},
+                {"$set": {
+                    "payment_status": webhook_response.payment_status,
+                    "webhook_processed_at": datetime.now().isoformat()
+                }}
+            )
+            
+            # Update booking status
+            transaction = payment_transactions_collection.find_one({"session_id": webhook_response.session_id})
+            if transaction:
+                bookings_collection.update_one(
+                    {"id": transaction["booking_id"]},
+                    {"$set": {
+                        "payment_status": "paid",
+                        "status": "confirmed",
+                        "confirmed_at": datetime.now().isoformat()
+                    }}
+                )
+        
+        return {"status": "success"}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/bookings/{booking_id}")
+async def get_booking(booking_id: str):
+    """Get booking details"""
+    booking = bookings_collection.find_one({"id": booking_id}, {"_id": 0})
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    return booking
+
+# Initialize sample data on startup
+@app.on_event("startup")
+async def startup_event():
+    init_sample_cleaners()
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8001)
