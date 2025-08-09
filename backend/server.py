@@ -174,48 +174,91 @@ SERVICE_AREAS = [
     "Phoenix", "Glendale", "Scottsdale", "Avondale"
 ]
 
-# Initialize sample cleaners
+# Initialize sample cleaners with error handling
 def init_sample_cleaners():
-    if cleaners_collection.count_documents({}) == 0:
-        sample_cleaners = [
-            {
-                "id": str(uuid.uuid4()),
-                "name": "Ivon Gamez",
-                "rating": 5.0,
-                "experience_years": 9,
-                "specialties": ["Kitchen Cleaning", "Deep Cleaning", "Move In/Out Cleaning"],
-                "avatar_url": "https://images.unsplash.com/photo-1494790108755-2616b932fc04?w=150&h=150&fit=crop&crop=face",
-                "available": True
-            },
-            {
-                "id": str(uuid.uuid4()),
-                "name": "Lucia Coronado",
-                "rating": 4.9,
-                "experience_years": 3,
-                "specialties": ["Bathroom Cleaning", "Deep Cleaning"],
-                "avatar_url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-                "available": True
-            },
-            {
-                "id": str(uuid.uuid4()),
-                "name": "Ana Garcia",
-                "rating": 4.9,
-                "experience_years": 7,
-                "specialties": ["Janitorial", "Deep Cleaning"],
-                "avatar_url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
-                "available": True
-            },
-            {
-                "id": str(uuid.uuid4()),
-                "name": "Jessica Martinez",
-                "rating": 4.7,
-                "experience_years": 4,
-                "specialties": ["Regular Cleaning", "Move In/Out"],
-                "avatar_url": "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=150&h=150&fit=crop&crop=face",
-                "available": True
-            }
-        ]
-        cleaners_collection.insert_many(sample_cleaners)
+    """Initialize sample cleaners with error handling"""
+    if not database_connected:
+        logger.warning("Database not connected, skipping cleaner initialization")
+        return False
+    
+    try:
+        if cleaners_collection.count_documents({}) == 0:
+            sample_cleaners = [
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "Ivon Gamez",
+                    "rating": 5.0,
+                    "experience_years": 9,
+                    "specialties": ["Kitchen Cleaning", "Deep Cleaning", "Move In/Out Cleaning"],
+                    "avatar_url": "https://images.unsplash.com/photo-1494790108755-2616b932fc04?w=150&h=150&fit=crop&crop=face",
+                    "available": True
+                },
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "Lucia Coronado",
+                    "rating": 4.9,
+                    "experience_years": 3,
+                    "specialties": ["Bathroom Cleaning", "Deep Cleaning"],
+                    "avatar_url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+                    "available": True
+                },
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "Ana Garcia",
+                    "rating": 4.9,
+                    "experience_years": 7,
+                    "specialties": ["Janitorial", "Deep Cleaning"],
+                    "avatar_url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+                    "available": True
+                },
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "Jessica Martinez",
+                    "rating": 4.7,
+                    "experience_years": 4,
+                    "specialties": ["Regular Cleaning", "Move In/Out"],
+                    "avatar_url": "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=150&h=150&fit=crop&crop=face",
+                    "available": True
+                }
+            ]
+            cleaners_collection.insert_many(sample_cleaners)
+            logger.info("Sample cleaners initialized successfully")
+            return True
+    except Exception as e:
+        logger.error(f"Error initializing sample cleaners: {e}")
+        return False
+
+# Health check endpoints
+@app.get("/")
+async def root():
+    """Root endpoint for basic health check"""
+    return {
+        "service": "Tati's Cleaners API",
+        "status": "healthy",
+        "version": "1.0.0",
+        "database_connected": database_connected
+    }
+
+@app.get("/health")
+async def health_check():
+    """Detailed health check endpoint"""
+    health_status = {
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "database": "connected" if database_connected else "disconnected",
+        "stripe": "available" if STRIPE_AVAILABLE and STRIPE_API_KEY else "unavailable"
+    }
+    
+    # Test database connection
+    if database_connected:
+        try:
+            client.admin.command('ping')
+            health_status["database_test"] = "success"
+        except Exception as e:
+            health_status["database_test"] = f"failed: {str(e)}"
+            health_status["status"] = "degraded"
+    
+    return health_status
 
 # API Routes
 @app.get("/api/cleaners")
