@@ -351,12 +351,7 @@ function App() {
                   }`}
                   onClick={() => setSelectedCleaner(cleaner)}
                 >
-                  <div className="flex items-center space-x-4 mb-4">
-                    <img 
-                      src={cleaner.avatar_url} 
-                      alt={cleaner.name}
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
+                  <div className="mb-4">
                     <div>
                       <h3 className="text-xl font-semibold text-slate-900">{cleaner.name}</h3>
                       <div className="flex items-center space-x-2">
