@@ -10,8 +10,11 @@ import logging
 from pydantic import BaseModel, Field
 import json
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logging with more details for production
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 
 # Import Stripe integration with error handling
