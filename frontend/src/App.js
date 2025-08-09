@@ -5,7 +5,17 @@ import { Button } from './components/ui/button';
 import { Card } from './components/ui/card';
 import { Badge } from './components/ui/badge';
 import { Separator } from './components/ui/separator';
-import { Star, Clock, MapPin, Phone, Mail, User, Calendar as CalendarIcon, CheckCircle, ArrowLeft } from 'lucide-react';
+import { Star, Clock, MapPin, Phone, Mail, User, Calendar as CalendarIcon, CheckCircle, ArrowLeft, Smartphone, Wifi, WifiOff } from 'lucide-react';
+
+// PWA functionality
+import { 
+  registerSW, 
+  initializeInstallPrompt, 
+  checkPWASupport, 
+  checkOnlineStatus,
+  requestNotificationPermission,
+  showNotification 
+} from './pwa';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
