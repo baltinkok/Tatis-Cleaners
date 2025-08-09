@@ -1,17 +1,39 @@
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
+from pymongo.errors import ServerSelectionTimeoutError, ConnectionFailure
 from datetime import datetime, timedelta
 import os
 import uuid
 from typing import List, Optional
+import logging
 from pydantic import BaseModel, Field
 import json
 
-# Import Stripe integration
-from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-app = FastAPI()
+# Import Stripe integration with error handling
+try:
+    from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
+    STRIPE_AVAILABLE = True
+    logger.info("Stripe integration loaded successfully")
+except ImportError as e:
+    logger.warning(f"Stripe integration not available: {e}")
+    STRIPE_AVAILABLE = False
+    # Create mock classes for development
+    class StripeCheckout:
+        def __init__(self, *args, **kwargs):
+            pass
+    class CheckoutSessionResponse:
+        pass
+    class CheckoutStatusResponse:
+        pass
+    class CheckoutSessionRequest:
+        pass
+
+app = FastAPI(title="Tati's Cleaners API", version="1.0.0")
 
 # Enable CORS
 app.add_middleware(
@@ -22,18 +44,78 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# MongoDB connection
+# MongoDB connection with improved error handling
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017/')
-client = MongoClient(MONGO_URL)
-db = client.tatis_cleaners
+DB_NAME = os.environ.get('DB_NAME', 'tatis_cleaners')
 
-# Collections
-cleaners_collection = db.cleaners
-bookings_collection = db.bookings
-payment_transactions_collection = db.payment_transactions
+# Global variables for database connections
+client = None
+db = None
+cleaners_collection = None
+bookings_collection = None
+payment_transactions_collection = None
+
+def init_database():
+    """Initialize database connection with retry logic"""
+    global client, db, cleaners_collection, bookings_collection, payment_transactions_collection
+    
+    max_retries = 3
+    retry_count = 0
+    
+    while retry_count < max_retries:
+        try:
+            logger.info(f"Attempting to connect to MongoDB (attempt {retry_count + 1}/{max_retries})")
+            logger.info(f"MongoDB URL: {MONGO_URL[:20]}...")
+            
+            # Create client with timeout settings for Atlas
+            client = MongoClient(
+                MONGO_URL, 
+                serverSelectionTimeoutMS=10000,  # 10 second timeout
+                connectTimeoutMS=10000,
+                maxPoolSize=10,
+                retryWrites=True
+            )
+            
+            # Test the connection
+            client.admin.command('ping')
+            logger.info("MongoDB connection successful")
+            
+            # Initialize database and collections
+            db = client[DB_NAME]
+            cleaners_collection = db.cleaners
+            bookings_collection = db.bookings
+            payment_transactions_collection = db.payment_transactions
+            
+            logger.info(f"Database '{DB_NAME}' initialized successfully")
+            return True
+            
+        except (ServerSelectionTimeoutError, ConnectionFailure) as e:
+            retry_count += 1
+            logger.error(f"MongoDB connection failed (attempt {retry_count}/{max_retries}): {e}")
+            
+            if retry_count >= max_retries:
+                logger.error("Failed to connect to MongoDB after maximum retries")
+                return False
+            
+            # Wait before retry
+            import time
+            time.sleep(2)
+            
+        except Exception as e:
+            logger.error(f"Unexpected database error: {e}")
+            return False
+    
+    return False
+
+# Initialize database connection
+database_connected = init_database()
 
 # Stripe setup
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY')
+if STRIPE_API_KEY:
+    logger.info("Stripe API key found")
+else:
+    logger.warning("Stripe API key not found")
 
 # Data models
 class Cleaner(BaseModel):
