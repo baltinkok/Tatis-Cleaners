@@ -196,8 +196,8 @@ function App() {
   };
 
   const calculateTotal = () => {
-    if (selectedHours) {
-      return selectedHours * 40;
+    if (selectedHours && selectedService && services[selectedService]) {
+      return selectedHours * services[selectedService].base_price;
     }
     return 0;
   };
