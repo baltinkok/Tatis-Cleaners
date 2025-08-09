@@ -62,7 +62,7 @@ class PaymentRequest(BaseModel):
     booking_id: str
     origin_url: str
 
-# Service packages with fixed pricing ($40/hour per cleaner)
+# Service packages with updated pricing per cleaner
 SERVICE_PACKAGES = {
     "regular_cleaning": {
         "name": "Regular Cleaning",
@@ -72,17 +72,17 @@ SERVICE_PACKAGES = {
     "deep_cleaning": {
         "name": "Deep Cleaning", 
         "description": "Thorough deep cleaning service",
-        "base_price": 40.0  # per hour
+        "base_price": 45.0  # per hour
     },
     "move_in_out": {
         "name": "Move In/Out Cleaning",
         "description": "Complete cleaning for moving",
-        "base_price": 40.0  # per hour
+        "base_price": 70.0  # per hour
     },
     "janitorial_cleaning": {
         "name": "Janitorial Cleaning",
         "description": "Commercial janitorial services", 
-        "base_price": 40.0  # per hour
+        "base_price": 70.0  # per hour
     }
 }
 
