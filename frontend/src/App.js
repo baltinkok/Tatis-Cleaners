@@ -145,6 +145,19 @@ function App() {
         const bookingResponse = await fetch(`${BACKEND_URL}/api/bookings/${bookingId}`);
         const bookingData = await bookingResponse.json();
         setBooking(bookingData);
+        
+        // Send PWA notification for successful booking
+        showNotification('Booking Confirmed! 🎉', {
+          body: `Your cleaning service is booked for ${bookingData.date} at ${bookingData.time}`,
+          tag: 'booking-confirmed',
+          actions: [
+            {
+              action: 'view',
+              title: 'View Details'
+            }
+          ]
+        });
+        
         return;
       } else if (data.status === 'expired') {
         setPaymentStatus('failed');
