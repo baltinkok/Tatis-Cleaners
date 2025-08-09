@@ -473,7 +473,7 @@ function App() {
                         <span className="text-2xl font-bold text-emerald-600">${calculateTotal()}</span>
                       </div>
                       <p className="text-sm text-slate-500 mt-1">
-                        {selectedHours} hour{selectedHours > 1 ? 's' : ''} × $40/hour
+                        {selectedHours} hour{selectedHours > 1 ? 's' : ''} × ${selectedService && services[selectedService] ? services[selectedService].base_price : 0}/hour
                       </p>
                     </div>
                   </div>
