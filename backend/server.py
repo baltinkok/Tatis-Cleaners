@@ -778,10 +778,40 @@ async def get_booking(booking_id: str):
         raise HTTPException(status_code=404, detail="Booking not found")
     return booking
 
-# Initialize sample data on startup
+# Initialize sample data on startup with proper error handling
 @app.on_event("startup")
 async def startup_event():
-    init_sample_cleaners()
+    """Initialize application on startup"""
+    logger.info("Starting Tati's Cleaners API...")
+    logger.info(f"Database connected: {database_connected}")
+    logger.info(f"Stripe available: {STRIPE_AVAILABLE}")
+    
+    if database_connected:
+        try:
+            init_result = init_sample_cleaners()
+            if init_result:
+                logger.info("Sample cleaners initialized successfully")
+            else:
+                logger.warning("Sample cleaners initialization skipped or failed")
+        except Exception as e:
+            logger.error(f"Error during startup initialization: {e}")
+            # Don't crash the app, just log the error
+    else:
+        logger.warning("Skipping sample data initialization - database not connected")
+    
+    logger.info("Tati's Cleaners API startup completed")
+
+# Graceful shutdown
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Clean shutdown of the application"""
+    logger.info("Shutting down Tati's Cleaners API...")
+    if client:
+        try:
+            client.close()
+            logger.info("Database connection closed")
+        except Exception as e:
+            logger.error(f"Error closing database connection: {e}")
 
 if __name__ == "__main__":
     import uvicorn
