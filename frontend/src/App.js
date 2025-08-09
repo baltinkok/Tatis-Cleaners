@@ -638,18 +638,82 @@ function App() {
               </div>
             </div>
 
-            {selectedDate && selectedTime && selectedArea && customerInfo.name && customerInfo.email && customerInfo.phone && customerInfo.address && (
-              <div className="text-center">
-                <Button 
-                  onClick={handleBooking} 
-                  size="lg" 
-                  className="bg-emerald-600 hover:bg-emerald-700"
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Creating Booking...' : 'Create Booking'}
-                </Button>
+            {/* Progress indicator and Create Booking Button */}
+            <div className="text-center space-y-4">
+              {/* Progress indicator showing what's missing */}
+              <div className="bg-slate-50 p-4 rounded-lg">
+                <h4 className="text-sm font-medium text-slate-700 mb-3">Booking Progress:</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  <div className={`flex items-center space-x-2 text-xs ${selectedDate ? 'text-emerald-600' : 'text-slate-400'}`}>
+                    {selectedDate ? <CheckCircle className="w-4 h-4" /> : <div className="w-4 h-4 border border-slate-300 rounded-full" />}
+                    <span>Date Selected</span>
+                  </div>
+                  <div className={`flex items-center space-x-2 text-xs ${selectedTime ? 'text-emerald-600' : 'text-slate-400'}`}>
+                    {selectedTime ? <CheckCircle className="w-4 h-4" /> : <div className="w-4 h-4 border border-slate-300 rounded-full" />}
+                    <span>Time Selected</span>
+                  </div>
+                  <div className={`flex items-center space-x-2 text-xs ${selectedArea ? 'text-emerald-600' : 'text-slate-400'}`}>
+                    {selectedArea ? <CheckCircle className="w-4 h-4" /> : <div className="w-4 h-4 border border-slate-300 rounded-full" />}
+                    <span>Area Selected</span>
+                  </div>
+                  <div className={`flex items-center space-x-2 text-xs ${(customerInfo.name && customerInfo.email && customerInfo.phone && customerInfo.address) ? 'text-emerald-600' : 'text-slate-400'}`}>
+                    {(customerInfo.name && customerInfo.email && customerInfo.phone && customerInfo.address) ? <CheckCircle className="w-4 h-4" /> : <div className="w-4 h-4 border border-slate-300 rounded-full" />}
+                    <span>Info Complete</span>
+                  </div>
+                </div>
               </div>
-            )}
+
+              {/* Show what's missing if not all fields completed */}
+              {!(selectedDate && selectedTime && selectedArea && customerInfo.name && customerInfo.email && customerInfo.phone && customerInfo.address) && (
+                <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg">
+                  <p className="text-amber-800 text-sm font-medium mb-2">Please complete the following to continue:</p>
+                  <ul className="text-amber-700 text-sm space-y-1">
+                    {!selectedDate && <li>• Select a date from the calendar</li>}
+                    {!selectedTime && <li>• Choose a time slot (appears after selecting date)</li>}
+                    {!selectedArea && <li>• Select your service area</li>}
+                    {!customerInfo.name && <li>• Enter your full name</li>}
+                    {!customerInfo.email && <li>• Enter your email address</li>}
+                    {!customerInfo.phone && <li>• Enter your phone number</li>}
+                    {!customerInfo.address && <li>• Enter your complete address</li>}
+                  </ul>
+                </div>
+              )}
+
+              {/* Create Booking Button - appears when all fields completed */}
+              {selectedDate && selectedTime && selectedArea && customerInfo.name && customerInfo.email && customerInfo.phone && customerInfo.address ? (
+                <div className="space-y-2">
+                  <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-lg">
+                    <p className="text-emerald-800 text-sm font-medium">🎉 Ready to book! All information completed.</p>
+                  </div>
+                  <Button 
+                    onClick={handleBooking} 
+                    size="lg" 
+                    className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8 py-4"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <span>Creating Booking...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-2">
+                        <span>Create Booking</span>
+                        <CheckCircle className="w-5 h-5" />
+                      </div>
+                    )}
+                  </Button>
+                </div>
+              ) : (
+                <Button 
+                  size="lg" 
+                  className="bg-slate-400 cursor-not-allowed text-lg px-8 py-4"
+                  disabled={true}
+                >
+                  Complete All Fields Above
+                </Button>
+              )}
+            </div>
           </div>
         )}
 
