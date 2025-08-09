@@ -719,9 +719,11 @@ function App() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold">T</span>
-                </div>
+                <img 
+                  src="https://customer-assets.emergentagent.com/job_cleanpro-hire/artifacts/gpq5psdo_tatis-cleaners-high-resolution-logo-transparent.png" 
+                  alt="Tati's Cleaners Logo" 
+                  className="w-10 h-10 object-contain"
+                />
                 <span className="text-xl font-bold">Tati's Cleaners</span>
               </div>
               <p className="text-slate-400">
