@@ -267,25 +267,50 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <img 
                 src="https://customer-assets.emergentagent.com/job_cleanpro-hire/artifacts/gpq5psdo_tatis-cleaners-high-resolution-logo-transparent.png" 
                 alt="Tati's Cleaners Logo" 
-                className="w-12 h-12 object-contain"
+                className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
               />
               <div>
-                <h1 className="text-2xl font-bold text-slate-900">Tati's Cleaners</h1>
-                <p className="text-sm text-slate-600">Professional Cleaning Services</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Tati's Cleaners</h1>
+                <p className="text-xs sm:text-sm text-slate-600">Professional Cleaning Services</p>
               </div>
             </div>
-            {currentStep > 1 && currentStep < 6 && (
-              <Button variant="outline" onClick={handleBack} className="flex items-center space-x-2">
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back</span>
-              </Button>
-            )}
+            
+            {/* PWA Status Indicator */}
+            <div className="flex items-center space-x-2">
+              {/* Online/Offline Status */}
+              <div className="flex items-center space-x-1">
+                {navigator.onLine ? (
+                  <Wifi className="w-4 h-4 text-emerald-600" />
+                ) : (
+                  <WifiOff className="w-4 h-4 text-red-500" />
+                )}
+                <span className="text-xs text-slate-500 hidden sm:inline">
+                  {navigator.onLine ? 'Online' : 'Offline'}
+                </span>
+              </div>
+              
+              {/* PWA Install Indicator */}
+              {window.matchMedia('(display-mode: standalone)').matches && (
+                <div className="flex items-center space-x-1">
+                  <Smartphone className="w-4 h-4 text-emerald-600" />
+                  <span className="text-xs text-emerald-600 hidden sm:inline">App</span>
+                </div>
+              )}
+              
+              {/* Back Button */}
+              {currentStep > 1 && currentStep < 6 && (
+                <Button variant="outline" onClick={handleBack} className="flex items-center space-x-2" size="sm">
+                  <ArrowLeft className="w-4 h-4" />
+                  <span className="hidden sm:inline">Back</span>
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </header>
