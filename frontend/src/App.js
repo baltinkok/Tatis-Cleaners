@@ -536,18 +536,23 @@ function App() {
 
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Service Area
+                        Service Area <span className="text-red-500">*</span>
                       </label>
                       <select 
                         value={selectedArea}
                         onChange={(e) => setSelectedArea(e.target.value)}
-                        className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 ${
+                          selectedArea ? 'border-emerald-300 bg-emerald-50' : 'border-slate-300'
+                        }`}
                       >
                         <option value="">Select area</option>
                         {serviceAreas.map(area => (
                           <option key={area} value={area}>{area}</option>
                         ))}
                       </select>
+                      {!selectedArea && (
+                        <p className="text-red-500 text-xs mt-1">Please select your service area</p>
+                      )}
                     </div>
 
                     <div className="bg-slate-50 p-4 rounded-lg">
