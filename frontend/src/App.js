@@ -573,13 +573,15 @@ function App() {
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
                         <User className="w-4 h-4 inline mr-1" />
-                        Full Name
+                        Full Name <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
                         value={customerInfo.name}
                         onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
-                        className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 ${
+                          customerInfo.name ? 'border-emerald-300 bg-emerald-50' : 'border-slate-300'
+                        }`}
                         placeholder="Your full name"
                       />
                     </div>
@@ -587,13 +589,15 @@ function App() {
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
                         <Mail className="w-4 h-4 inline mr-1" />
-                        Email Address
+                        Email Address <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="email"
                         value={customerInfo.email}
                         onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})}
-                        className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 ${
+                          customerInfo.email ? 'border-emerald-300 bg-emerald-50' : 'border-slate-300'
+                        }`}
                         placeholder="your.email@example.com"
                       />
                     </div>
@@ -601,28 +605,32 @@ function App() {
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
                         <Phone className="w-4 h-4 inline mr-1" />
-                        Phone Number
+                        Phone Number <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="tel"
                         value={customerInfo.phone}
                         onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
-                        className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                        placeholder="(555) 123-4567"
+                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 ${
+                          customerInfo.phone ? 'border-emerald-300 bg-emerald-50' : 'border-slate-300'
+                        }`}
+                        placeholder="(480) 555-1234"
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-2">
                         <MapPin className="w-4 h-4 inline mr-1" />
-                        Street Address
+                        Street Address <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
                         value={customerInfo.address}
                         onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})}
-                        className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                        placeholder="1234 Main St, City, AZ 85001"
+                        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 ${
+                          customerInfo.address ? 'border-emerald-300 bg-emerald-50' : 'border-slate-300'
+                        }`}
+                        placeholder="1234 Main St, Phoenix, AZ 85001"
                       />
                     </div>
 
