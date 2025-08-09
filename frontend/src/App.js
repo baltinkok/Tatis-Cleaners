@@ -47,7 +47,45 @@ function App() {
     loadCleaners();
     loadServiceAreas();
     checkPaymentReturn();
+    
+    // Initialize PWA functionality
+    initializePWA();
   }, []);
+
+  // Initialize PWA features
+  const initializePWA = () => {
+    // Register service worker
+    registerSW();
+    
+    // Initialize install prompt
+    initializeInstallPrompt();
+    
+    // Check PWA support
+    const pwaSupport = checkPWASupport();
+    console.log('PWA features available:', pwaSupport);
+    
+    // Monitor connection status
+    checkOnlineStatus();
+    
+    // Request notification permission after user interaction
+    const requestPermissions = () => {
+      requestNotificationPermission().then(granted => {
+        if (granted) {
+          console.log('Notifications enabled');
+        }
+      });
+    };
+
+    // Request permissions on first user interaction
+    const handleFirstInteraction = () => {
+      requestPermissions();
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('touchstart', handleFirstInteraction);
+  };
 
   const loadServices = async () => {
     try {
