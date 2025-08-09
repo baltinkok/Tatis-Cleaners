@@ -98,19 +98,19 @@ def init_sample_cleaners():
         sample_cleaners = [
             {
                 "id": str(uuid.uuid4()),
-                "name": "Maria Rodriguez",
-                "rating": 4.9,
-                "experience_years": 5,
-                "specialties": ["Deep Cleaning", "Regular Cleaning"],
+                "name": "Ivon Gamez",
+                "rating": 5.0,
+                "experience_years": 9,
+                "specialties": ["Kitchen Cleaning", "Deep Cleaning", "Move In/Out Cleaning"],
                 "avatar_url": "https://images.unsplash.com/photo-1494790108755-2616b932fc04?w=150&h=150&fit=crop&crop=face",
                 "available": True
             },
             {
                 "id": str(uuid.uuid4()),
-                "name": "Sarah Johnson",
-                "rating": 4.8,
+                "name": "Lucia Coronado",
+                "rating": 4.9,
                 "experience_years": 3,
-                "specialties": ["Move In/Out", "Regular Cleaning"],
+                "specialties": ["Bathroom Cleaning", "Deep Cleaning"],
                 "avatar_url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
                 "available": True
             },
