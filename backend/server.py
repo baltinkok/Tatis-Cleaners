@@ -260,12 +260,296 @@ async def health_check():
     
     return health_status
 
-# API Routes
+# API Routes with error handling
 @app.get("/api/cleaners")
 async def get_cleaners():
     """Get all available cleaners"""
-    cleaners = list(cleaners_collection.find({"available": True}, {"_id": 0}))
-    return {"cleaners": cleaners}
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        cleaners = list(cleaners_collection.find({"available": True}, {"_id": 0}))
+        return {"cleaners": cleaners}
+    except Exception as e:
+        logger.error(f"Error fetching cleaners: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching cleaners")
+
+@app.get("/api/service-areas")
+async def get_service_areas():
+    """Get all service areas"""
+    try:
+        return {"areas": SERVICE_AREAS}
+    except Exception as e:
+        logger.error(f"Error fetching service areas: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching service areas")
+
+@app.get("/api/services")
+async def get_services():
+    """Get all service types"""
+    try:
+        return {"services": SERVICE_PACKAGES}
+    except Exception as e:
+        logger.error(f"Error fetching services: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching services")
+
+@app.post("/api/bookings")
+async def create_booking(booking: BookingRequest):
+    """Create a new booking"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        # Validate service type
+        if booking.service_type not in SERVICE_PACKAGES:
+            raise HTTPException(status_code=400, detail="Invalid service type")
+        
+        # Validate cleaner exists
+        cleaner = cleaners_collection.find_one({"id": booking.cleaner_id})
+        if not cleaner:
+            raise HTTPException(status_code=400, detail="Cleaner not found")
+        
+        # Validate service area
+        if booking.location not in SERVICE_AREAS:
+            raise HTTPException(status_code=400, detail="Service area not supported")
+        
+        # Calculate total amount
+        service_price = SERVICE_PACKAGES[booking.service_type]["base_price"]
+        total_amount = service_price * booking.hours
+        
+        # Create booking
+        booking_id = str(uuid.uuid4())
+        booking_data = {
+            "id": booking_id,
+            "service_type": booking.service_type,
+            "cleaner_id": booking.cleaner_id,
+            "cleaner_name": cleaner["name"],
+            "date": booking.date,
+            "time": booking.time,
+            "hours": booking.hours,
+            "location": booking.location,
+            "address": booking.address,
+            "customer_name": booking.customer_name,
+            "customer_email": booking.customer_email,
+            "customer_phone": booking.customer_phone,
+            "special_instructions": booking.special_instructions,
+            "total_amount": total_amount,
+            "status": "pending_payment",
+            "created_at": datetime.now().isoformat(),
+            "payment_status": "pending"
+        }
+        
+        bookings_collection.insert_one(booking_data)
+        
+        return {
+            "booking_id": booking_id,
+            "total_amount": total_amount,
+            "message": "Booking created successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating booking: {e}")
+        raise HTTPException(status_code=500, detail="Error creating booking")
+
+@app.post("/api/checkout/session")
+async def create_checkout_session(payment: PaymentRequest, request: Request):
+    """Create Stripe checkout session for booking payment"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    if not STRIPE_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Payment service not available")
+    
+    try:
+        # Get booking details
+        booking = bookings_collection.find_one({"id": payment.booking_id})
+        if not booking:
+            raise HTTPException(status_code=404, detail="Booking not found")
+        
+        if booking["payment_status"] == "paid":
+            raise HTTPException(status_code=400, detail="Booking already paid")
+        
+        # Initialize Stripe checkout
+        if not STRIPE_API_KEY:
+            raise HTTPException(status_code=500, detail="Stripe API key not configured")
+        
+        host_url = payment.origin_url
+        webhook_url = f"{host_url}/api/webhook/stripe"
+        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+        
+        # Create checkout session
+        success_url = f"{host_url}?session_id={{CHECKOUT_SESSION_ID}}&booking_id={payment.booking_id}"
+        cancel_url = f"{host_url}?cancelled=true"
+        
+        checkout_request = CheckoutSessionRequest(
+            amount=float(booking["total_amount"]),
+            currency="usd",
+            success_url=success_url,
+            cancel_url=cancel_url,
+            metadata={
+                "booking_id": payment.booking_id,
+                "customer_email": booking["customer_email"],
+                "service_type": booking["service_type"]
+            }
+        )
+        
+        session = await stripe_checkout.create_checkout_session(checkout_request)
+        
+        # Create payment transaction record
+        payment_transaction = {
+            "id": str(uuid.uuid4()),
+            "session_id": session.session_id,
+            "booking_id": payment.booking_id,
+            "amount": float(booking["total_amount"]),
+            "currency": "usd",
+            "payment_status": "pending",
+            "status": "initiated",
+            "customer_email": booking["customer_email"],
+            "created_at": datetime.now().isoformat(),
+            "metadata": checkout_request.metadata
+        }
+        
+        payment_transactions_collection.insert_one(payment_transaction)
+        
+        return {
+            "url": session.url,
+            "session_id": session.session_id
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating checkout session: {e}")
+        raise HTTPException(status_code=500, detail="Error creating checkout session")
+
+@app.get("/api/checkout/status/{session_id}")
+async def get_checkout_status(session_id: str):
+    """Get payment status for a checkout session"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    if not STRIPE_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Payment service not available")
+    
+    try:
+        # Get payment transaction
+        transaction = payment_transactions_collection.find_one({"session_id": session_id})
+        if not transaction:
+            raise HTTPException(status_code=404, detail="Payment session not found")
+        
+        # Initialize Stripe checkout
+        if not STRIPE_API_KEY:
+            raise HTTPException(status_code=500, detail="Stripe API key not configured")
+        
+        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
+        
+        # Get status from Stripe  
+        checkout_status = await stripe_checkout.get_checkout_status(session_id)
+        
+        # Update transaction status
+        update_data = {
+            "status": checkout_status.status,
+            "payment_status": checkout_status.payment_status,
+            "updated_at": datetime.now().isoformat()
+        }
+        
+        payment_transactions_collection.update_one(
+            {"session_id": session_id},
+            {"$set": update_data}
+        )
+        
+        # Update booking status if payment successful
+        if checkout_status.payment_status == "paid" and transaction["payment_status"] != "paid":
+            bookings_collection.update_one(
+                {"id": transaction["booking_id"]},
+                {"$set": {
+                    "payment_status": "paid",
+                    "status": "confirmed",
+                    "confirmed_at": datetime.now().isoformat()
+                }}
+            )
+        
+        return {
+            "status": checkout_status.status,
+            "payment_status": checkout_status.payment_status,
+            "amount_total": checkout_status.amount_total,
+            "currency": checkout_status.currency,
+            "booking_id": transaction["booking_id"]
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error checking payment status: {e}")
+        raise HTTPException(status_code=500, detail="Error checking payment status")
+
+@app.post("/api/webhook/stripe")
+async def stripe_webhook(request: Request):
+    """Handle Stripe webhooks"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    if not STRIPE_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Payment service not available")
+    
+    try:
+        body = await request.body()
+        signature = request.headers.get("Stripe-Signature")
+        
+        if not STRIPE_API_KEY:
+            raise HTTPException(status_code=500, detail="Stripe API key not configured")
+        
+        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
+        webhook_response = await stripe_checkout.handle_webhook(body, signature)
+        
+        # Process webhook event
+        if webhook_response.event_type == "checkout.session.completed":
+            # Update payment transaction
+            payment_transactions_collection.update_one(
+                {"session_id": webhook_response.session_id},
+                {"$set": {
+                    "payment_status": webhook_response.payment_status,
+                    "webhook_processed_at": datetime.now().isoformat()
+                }}
+            )
+            
+            # Update booking status
+            transaction = payment_transactions_collection.find_one({"session_id": webhook_response.session_id})
+            if transaction:
+                bookings_collection.update_one(
+                    {"id": transaction["booking_id"]},
+                    {"$set": {
+                        "payment_status": "paid",
+                        "status": "confirmed",
+                        "confirmed_at": datetime.now().isoformat()
+                    }}
+                )
+        
+        return {"status": "success"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error processing webhook: {e}")
+        raise HTTPException(status_code=500, detail="Error processing webhook")
+
+@app.get("/api/bookings/{booking_id}")
+async def get_booking(booking_id: str):
+    """Get booking details"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        booking = bookings_collection.find_one({"id": booking_id}, {"_id": 0})
+        if not booking:
+            raise HTTPException(status_code=404, detail="Booking not found")
+        return booking
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching booking: {e}")
+        raise HTTPException(status_code=500, detail="Error fetching booking")
 
 @app.get("/api/service-areas")
 async def get_service_areas():
