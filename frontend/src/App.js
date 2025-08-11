@@ -384,6 +384,254 @@ function App() {
                 ))}
               </div>
             </Card>
+
+            {/* FAQ Section */}
+            <Card className="p-8">
+              <div className="text-center mb-8">
+                <div className="flex items-center justify-center space-x-2 mb-4">
+                  <HelpCircle className="w-8 h-8 text-emerald-600" />
+                  <h2 className="text-3xl font-bold text-slate-900">Frequently Asked Questions</h2>
+                </div>
+                <p className="text-slate-600 max-w-2xl mx-auto">
+                  Get answers to common questions about our professional cleaning services
+                </p>
+              </div>
+
+              <div className="max-w-4xl mx-auto">
+                <Accordion type="single" collapsible className="space-y-4">
+                  
+                  <AccordionItem value="pricing" className="border border-slate-200 rounded-lg px-6">
+                    <AccordionTrigger className="text-left hover:text-emerald-600">
+                      <span className="font-semibold">How much do your cleaning services cost?</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-600 pt-4">
+                      <div className="space-y-3">
+                        <p>Our pricing is simple and transparent:</p>
+                        <ul className="space-y-2">
+                          <li><strong>Regular Cleaning:</strong> $40/hour per cleaner</li>
+                          <li><strong>Deep Cleaning:</strong> $45/hour per cleaner</li>
+                          <li><strong>Move In/Out Cleaning:</strong> $70/hour per cleaner</li>
+                          <li><strong>Janitorial Cleaning:</strong> $70/hour per cleaner</li>
+                        </ul>
+                        <p>Most regular cleanings take 2-4 hours depending on home size. You choose exactly how many hours you need when booking.</p>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="areas" className="border border-slate-200 rounded-lg px-6">
+                    <AccordionTrigger className="text-left hover:text-emerald-600">
+                      <span className="font-semibold">What areas do you serve in Arizona?</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-600 pt-4">
+                      <p className="mb-3">We proudly serve these Arizona communities:</p>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        {serviceAreas.map((area) => (
+                          <div key={area} className="flex items-center space-x-2">
+                            <CheckCircle className="w-4 h-4 text-emerald-600" />
+                            <span>{area}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="mt-3">Don't see your area? Call us at (833) 735-TATI - we may be expanding to your location soon!</p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="booking" className="border border-slate-200 rounded-lg px-6">
+                    <AccordionTrigger className="text-left hover:text-emerald-600">
+                      <span className="font-semibold">How do I book a cleaning appointment?</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-600 pt-4">
+                      <div className="space-y-3">
+                        <p>Booking is easy with our online system:</p>
+                        <ol className="list-decimal list-inside space-y-2">
+                          <li>Choose your service type (Regular, Deep, Move In/Out, or Janitorial)</li>
+                          <li>Select your preferred cleaner from our experienced team</li>
+                          <li>Pick your date, time, and number of hours needed</li>
+                          <li>Enter your contact information and service address</li>
+                          <li>Complete secure payment through Stripe</li>
+                          <li>Receive instant confirmation and reminders</li>
+                        </ol>
+                        <p>You can also call us directly at <strong>(833) 735-TATI</strong> for phone bookings.</p>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="cleaners" className="border border-slate-200 rounded-lg px-6">
+                    <AccordionTrigger className="text-left hover:text-emerald-600">
+                      <span className="font-semibold">Are your cleaners licensed and insured?</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-600 pt-4">
+                      <div className="space-y-3">
+                        <p><strong>Yes!</strong> Your safety and peace of mind are our top priorities:</p>
+                        <ul className="space-y-2">
+                          <li>✅ <strong>Licensed & Insured:</strong> All cleaners are fully licensed and bonded</li>
+                          <li>✅ <strong>Background Checked:</strong> Comprehensive background checks on all team members</li>
+                          <li>✅ <strong>Experienced Team:</strong> Our cleaners have 3-9 years of professional experience</li>
+                          <li>✅ <strong>Satisfaction Guaranteed:</strong> 100% satisfaction guarantee on all services</li>
+                        </ul>
+                        <p>Meet our team: Ivon Gamez (9 years, 5-star rating), Lucia Coronado (3 years, 4.9 stars), Ana Garcia (7 years, 4.9 stars), and Jessica Martinez (4 years, 4.7 stars).</p>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="supplies" className="border border-slate-200 rounded-lg px-6">
+                    <AccordionTrigger className="text-left hover:text-emerald-600">
+                      <span className="font-semibold">Do I need to provide cleaning supplies?</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-600 pt-4">
+                      <div className="space-y-3">
+                        <p><strong>We bring everything!</strong> Our professional cleaners arrive fully equipped with:</p>
+                        <ul className="space-y-2">
+                          <li>🧽 All cleaning supplies and equipment</li>
+                          <li>🧴 Professional-grade, eco-friendly cleaning products</li>
+                          <li>🧹 Vacuum cleaners, mops, and specialized tools</li>
+                          <li>🧤 Protective equipment and safety gear</li>
+                        </ul>
+                        <p>Just relax and let us handle everything. If you have specific product preferences or allergies, please mention them in the special instructions when booking.</p>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="payment" className="border border-slate-200 rounded-lg px-6">
+                    <AccordionTrigger className="text-left hover:text-emerald-600">
+                      <span className="font-semibold">When and how do I pay?</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-600 pt-4">
+                      <div className="space-y-3">
+                        <p>Payment is secure and convenient:</p>
+                        <ul className="space-y-2">
+                          <li>💳 <strong>Pay Online:</strong> Secure payment through Stripe when you book</li>
+                          <li>💰 <strong>Accepted Methods:</strong> All major credit/debit cards, Apple Pay, Google Pay</li>
+                          <li>📧 <strong>Instant Receipt:</strong> Email confirmation and receipt immediately</li>
+                          <li>🔒 <strong>Secure Processing:</strong> Bank-level encryption protects your information</li>
+                        </ul>
+                        <p>Payment is required at booking to secure your appointment. No cash handling needed!</p>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="cancellation" className="border border-slate-200 rounded-lg px-6">
+                    <AccordionTrigger className="text-left hover:text-emerald-600">
+                      <span className="font-semibold">What's your cancellation policy?</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-600 pt-4">
+                      <div className="space-y-3">
+                        <p>We understand plans change. Our flexible policy:</p>
+                        <ul className="space-y-2">
+                          <li>📞 <strong>24+ Hours:</strong> Full refund for cancellations 24+ hours in advance</li>
+                          <li>⏰ <strong>Same Day:</strong> 50% refund for same-day cancellations</li>
+                          <li>🔄 <strong>Reschedule:</strong> Free rescheduling anytime before service</li>
+                          <li>☔ <strong>Weather/Emergency:</strong> Full refund for weather or emergency cancellations</li>
+                        </ul>
+                        <p>To cancel or reschedule, call us at <strong>(833) 735-TATI</strong> or email info@tatiscleaners.com.</p>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="time" className="border border-slate-200 rounded-lg px-6">
+                    <AccordionTrigger className="text-left hover:text-emerald-600">
+                      <span className="font-semibold">How long does cleaning take?</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-600 pt-4">
+                      <div className="space-y-3">
+                        <p>Cleaning time depends on your home size and service type:</p>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <h5 className="font-semibold text-slate-800 mb-2">Regular Cleaning:</h5>
+                            <ul className="space-y-1 text-sm">
+                              <li>• 1-2 bedroom: 2-3 hours</li>
+                              <li>• 3-4 bedroom: 3-4 hours</li>
+                              <li>• 5+ bedroom: 4-6 hours</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h5 className="font-semibold text-slate-800 mb-2">Deep Cleaning:</h5>
+                            <ul className="space-y-1 text-sm">
+                              <li>• Add 1-2 hours to regular times</li>
+                              <li>• First-time deep clean may take longer</li>
+                              <li>• Move in/out: 4-8 hours typical</li>
+                            </ul>
+                          </div>
+                        </div>
+                        <p><strong>You choose the hours</strong> when booking - pay only for the time you need!</p>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="contact" className="border border-slate-200 rounded-lg px-6">
+                    <AccordionTrigger className="text-left hover:text-emerald-600">
+                      <span className="font-semibold">How can I contact Tati's Cleaners?</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-600 pt-4">
+                      <div className="space-y-4">
+                        <p>We're here to help! Contact us anytime:</p>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="space-y-3">
+                            <div className="flex items-center space-x-3">
+                              <Phone className="w-5 h-5 text-emerald-600" />
+                              <div>
+                                <p className="font-semibold">Phone</p>
+                                <p>(833) 735-TATI</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <Mail className="w-5 h-5 text-emerald-600" />
+                              <div>
+                                <p className="font-semibold">Email</p>
+                                <p>info@tatiscleaners.com</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="space-y-3">
+                            <div className="flex items-center space-x-3">
+                              <Clock className="w-5 h-5 text-emerald-600" />
+                              <div>
+                                <p className="font-semibold">Hours</p>
+                                <p>Mon-Sun: 8:00 AM - 6:00 PM</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <Smartphone className="w-5 h-5 text-emerald-600" />
+                              <div>
+                                <p className="font-semibold">Online</p>
+                                <p>Book 24/7 through this app</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                </Accordion>
+              </div>
+
+              {/* Call to Action */}
+              <div className="text-center mt-12 p-8 bg-emerald-50 rounded-xl">
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">Ready to Book Your Cleaning?</h3>
+                <p className="text-slate-600 mb-6 max-w-2xl mx-auto">
+                  Still have questions? Our friendly team is standing by to help you choose the perfect cleaning service for your needs.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button 
+                    onClick={() => setCurrentStep(2)}
+                    size="lg" 
+                    className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8"
+                  >
+                    Book Online Now
+                  </Button>
+                  <Button 
+                    onClick={() => window.open('tel:+18337358284')}
+                    variant="outline" 
+                    size="lg" 
+                    className="text-lg px-8"
+                  >
+                    <Phone className="w-5 h-5 mr-2" />
+                    Call (833) 735-TATI
+                  </Button>
+                </div>
+              </div>
+            </Card>
           </div>
         )}
 
