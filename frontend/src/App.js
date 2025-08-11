@@ -536,22 +536,73 @@ function App() {
                       <div className="space-y-4">
                         <p>Cleaning time depends on your home size and service type:</p>
                         
-                        {/* Specific 1BR/1BA apartment timing */}
+                        {/* Detailed 1BR/1BA apartment timing */}
                         <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-lg">
-                          <h5 className="font-semibold text-emerald-800 mb-2">🏠 1 Bedroom, 1 Bathroom Apartment:</h5>
-                          <div className="space-y-1 text-sm">
-                            <p><strong>Regular Cleaning:</strong> 1.5 - 2 hours</p>
-                            <p><strong>Deep Cleaning:</strong> 2.5 - 3 hours</p>
-                            <p><strong>Move In/Out:</strong> 3 - 4 hours</p>
+                          <h5 className="font-semibold text-emerald-800 mb-3">🏠 1 Bedroom, 1 Bathroom Apartment</h5>
+                          
+                          <div className="space-y-3">
+                            <p className="text-sm"><strong>For a basic residential cleaning of a 1-bedroom, 1-bathroom apartment, the time required typically depends on:</strong></p>
+                            
+                            <ul className="text-sm space-y-1 ml-4">
+                              <li>• The size of the apartment (usually 500–800 sq ft)</li>
+                              <li>• The current condition/cleanliness</li>
+                              <li>• Whether it's a first-time clean or recurring</li>
+                            </ul>
+
+                            <div className="bg-white p-3 rounded border">
+                              <p className="font-semibold text-emerald-700 mb-2">⏱️ General Time Estimate:</p>
+                              <p className="text-sm font-medium">1.5 to 3 hours for one cleaner</p>
+                            </div>
+
+                            <div>
+                              <p className="font-semibold text-slate-800 mb-2">🧹 Breakdown of Tasks:</p>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                                <div>
+                                  <p><strong>Bathroom:</strong> 20–40 minutes</p>
+                                  <p className="text-xs text-slate-500 ml-2">(toilet, sink, shower/tub, mirrors, floors)</p>
+                                </div>
+                                <div>
+                                  <p><strong>Bedroom:</strong> 15–30 minutes</p>
+                                  <p className="text-xs text-slate-500 ml-2">(dusting, vacuuming, making bed)</p>
+                                </div>
+                                <div>
+                                  <p><strong>Living area:</strong> 20–30 minutes</p>
+                                  <p className="text-xs text-slate-500 ml-2">(dusting, vacuuming/sweeping, surfaces)</p>
+                                </div>
+                                <div>
+                                  <p><strong>Kitchen:</strong> 30–45 minutes</p>
+                                  <p className="text-xs text-slate-500 ml-2">(counters, outside appliances, sink, floors)</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div>
+                              <p className="font-semibold text-slate-800 mb-2">📊 Time Based on Condition:</p>
+                              <div className="space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                  <span>Well-maintained and cleaned regularly:</span>
+                                  <span className="font-medium text-emerald-700">~1.5–2 hours</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Moderately dirty or first clean:</span>
+                                  <span className="font-medium text-amber-700">~2–3 hours</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Very dirty or not cleaned in a while:</span>
+                                  <span className="font-medium text-red-700">3+ hours (deep clean)</span>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          <p className="text-xs text-emerald-700 mt-2 italic">
-                            *Most popular apartment size - perfect for our 2-hour minimum booking
+                          
+                          <p className="text-xs text-emerald-700 mt-3 italic">
+                            💡 Most customers book 2-3 hours for optimal results in a 1BR/1BA apartment
                           </p>
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-4">
                           <div>
-                            <h5 className="font-semibold text-slate-800 mb-2">Regular Cleaning:</h5>
+                            <h5 className="font-semibold text-slate-800 mb-2">Other Home Sizes - Regular Cleaning:</h5>
                             <ul className="space-y-1 text-sm">
                               <li>• 1-2 bedroom: 2-3 hours</li>
                               <li>• 3-4 bedroom: 3-4 hours</li>
@@ -569,7 +620,12 @@ function App() {
                         </div>
                         
                         <div className="bg-slate-50 p-3 rounded-lg">
-                          <p className="text-sm"><strong>💡 Pro Tip:</strong> For a 1BR/1BA apartment, we recommend booking 2 hours for regular cleaning. This gives enough time for thorough cleaning while staying cost-effective at $80-140 depending on service type.</p>
+                          <p className="text-sm"><strong>💰 Cost Examples for 1BR/1BA:</strong></p>
+                          <div className="text-sm space-y-1 mt-2">
+                            <p>• 2 hours Regular Cleaning: $80</p>
+                            <p>• 3 hours Deep Cleaning: $135</p>
+                            <p>• 3 hours Move In/Out: $210</p>
+                          </div>
                         </div>
                         
                         <p><strong>You choose the hours</strong> when booking - pay only for the time you need!</p>
