@@ -4,7 +4,7 @@ import json
 from datetime import datetime, timedelta
 
 class TatisCleanersAPITester:
-    def __init__(self, base_url="https://dc2398ee-f4cf-4439-b3ae-7fbc8a73a530.preview.emergentagent.com"):
+    def __init__(self, base_url="https://7d48bb0e-5833-4874-a3b6-67b80d36311b.preview.emergentagent.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
@@ -212,7 +212,7 @@ class TatisCleanersAPITester:
 
         payment_data = {
             "booking_id": self.booking_id,
-            "origin_url": "https://dc2398ee-f4cf-4439-b3ae-7fbc8a73a530.preview.emergentagent.com"
+            "origin_url": "https://7d48bb0e-5833-4874-a3b6-67b80d36311b.preview.emergentagent.com"
         }
 
         success, response = self.run_test(
