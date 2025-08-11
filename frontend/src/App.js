@@ -889,6 +889,24 @@ function App() {
           </div>
           
           <Accordion type="single" collapsible className="w-full space-y-4">
+            <AccordionItem value="item-0" className="bg-white rounded-lg border">
+              <AccordionTrigger className="px-6 py-4 text-left">
+                How much do your cleaning services cost?
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4">
+                <div className="text-slate-600">
+                  <p>Our pricing is simple and transparent:</p>
+                  <ul className="list-disc pl-6 mt-2 space-y-1">
+                    <li><strong>Regular Cleaning:</strong> $40/hour per cleaner</li>
+                    <li><strong>Deep Cleaning:</strong> $45/hour per cleaner</li>
+                    <li><strong>Move In/Out Cleaning:</strong> $70/hour per cleaner</li>
+                    <li><strong>Janitorial Services:</strong> $70/hour per cleaner</li>
+                  </ul>
+                  <p className="mt-2">All prices are per cleaner, per hour. You can select the number of hours based on your specific needs.</p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
             <AccordionItem value="item-1" className="bg-white rounded-lg border">
               <AccordionTrigger className="px-6 py-4 text-left">
                 How long does a residential basic cleaning take for a 1-bedroom, 1-bathroom apartment?
