@@ -633,6 +633,95 @@ function App() {
                     </AccordionContent>
                   </AccordionItem>
 
+                  <AccordionItem value="deep-clean-time" className="border border-slate-200 rounded-lg px-6">
+                    <AccordionTrigger className="text-left hover:text-emerald-600">
+                      <span className="font-semibold">How long does a deep cleaning take for a 1-bedroom, 1-bathroom apartment?</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-600 pt-4">
+                      <div className="space-y-4">
+                        <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                          <h5 className="font-semibold text-blue-800 mb-3">🏠 1 Bedroom, 1 Bathroom Deep Cleaning</h5>
+                          
+                          <div className="space-y-3">
+                            <div className="bg-white p-3 rounded border">
+                              <p className="font-semibold text-blue-700 mb-2">⏱️ Total Time Estimate:</p>
+                              <p className="text-sm font-medium">3 to 5 hours for one professional cleaner</p>
+                            </div>
+
+                            <div>
+                              <p className="font-semibold text-slate-800 mb-2">📋 Key Factors Affecting Time:</p>
+                              <ul className="text-sm space-y-1 ml-4">
+                                <li>• Current cleanliness level (dust, grime, buildup, pet hair, etc.)</li>
+                                <li>• Square footage (typically 500–800 sq ft for a 1-bed)</li>
+                                <li>• Add-ons requested (inside appliances, baseboards, blinds, etc.)</li>
+                              </ul>
+                            </div>
+
+                            <div>
+                              <p className="font-semibold text-slate-800 mb-3">🧹 Detailed Time Breakdown (Deep Clean):</p>
+                              
+                              <div className="overflow-x-auto">
+                                <table className="w-full text-sm border-collapse">
+                                  <thead>
+                                    <tr className="bg-slate-100">
+                                      <th className="text-left p-2 border font-semibold">Area</th>
+                                      <th className="text-left p-2 border font-semibold">Tasks Included</th>
+                                      <th className="text-left p-2 border font-semibold">Time (Approx.)</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr className="border-b">
+                                      <td className="p-2 border font-medium text-slate-800">Bathroom</td>
+                                      <td className="p-2 border text-xs">Scrub toilet, tub/shower, tiles, grout, sink, mirrors, baseboards</td>
+                                      <td className="p-2 border font-medium text-blue-700">40–60 mins</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                      <td className="p-2 border font-medium text-slate-800">Bedroom</td>
+                                      <td className="p-2 border text-xs">Dusting (incl. furniture, vents, fans), vacuuming, wiping baseboards, blinds</td>
+                                      <td className="p-2 border font-medium text-blue-700">30–45 mins</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                      <td className="p-2 border font-medium text-slate-800">Living Area</td>
+                                      <td className="p-2 border text-xs">Detailed dusting, vacuuming, upholstery cleaning, baseboards, electronics</td>
+                                      <td className="p-2 border font-medium text-blue-700">30–60 mins</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                      <td className="p-2 border font-medium text-slate-800">Kitchen</td>
+                                      <td className="p-2 border text-xs">Scrub countertops, cabinet fronts, appliances (outside & inside if requested)</td>
+                                      <td className="p-2 border font-medium text-blue-700">60–90 mins</td>
+                                    </tr>
+                                    <tr>
+                                      <td className="p-2 border font-medium text-slate-800">Floors</td>
+                                      <td className="p-2 border text-xs">Vacuuming, mopping all floors thoroughly (may include edges, under furniture)</td>
+                                      <td className="p-2 border font-medium text-blue-700">20–30 mins</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+
+                            <div className="bg-slate-50 p-3 rounded-lg">
+                              <p className="text-sm"><strong>💰 Deep Cleaning Cost Examples for 1BR/1BA:</strong></p>
+                              <div className="text-sm space-y-1 mt-2">
+                                <p>• 3 hours Deep Cleaning: $135</p>
+                                <p>• 4 hours Deep Cleaning (with extras): $180</p>
+                                <p>• 5 hours Deep Cleaning (heavy buildup): $225</p>
+                              </div>
+                            </div>
+
+                            <div className="bg-amber-50 border border-amber-200 p-3 rounded">
+                              <p className="text-amber-800 text-sm"><strong>💡 Recommendation:</strong> For a 1BR/1BA deep cleaning, we recommend booking 3-4 hours for optimal results. First-time deep cleans or heavily neglected apartments may require 4-5 hours.</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="text-center">
+                          <p className="text-sm text-slate-600">Ready to book your deep cleaning? <strong>You choose the hours</strong> - pay only for what you need!</p>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
                   <AccordionItem value="contact" className="border border-slate-200 rounded-lg px-6">
                     <AccordionTrigger className="text-left hover:text-emerald-600">
                       <span className="font-semibold">How can I contact Tati's Cleaners?</span>
