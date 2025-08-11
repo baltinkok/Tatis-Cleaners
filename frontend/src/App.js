@@ -533,8 +533,22 @@ function App() {
                       <span className="font-semibold">How long does cleaning take?</span>
                     </AccordionTrigger>
                     <AccordionContent className="text-slate-600 pt-4">
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         <p>Cleaning time depends on your home size and service type:</p>
+                        
+                        {/* Specific 1BR/1BA apartment timing */}
+                        <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-lg">
+                          <h5 className="font-semibold text-emerald-800 mb-2">🏠 1 Bedroom, 1 Bathroom Apartment:</h5>
+                          <div className="space-y-1 text-sm">
+                            <p><strong>Regular Cleaning:</strong> 1.5 - 2 hours</p>
+                            <p><strong>Deep Cleaning:</strong> 2.5 - 3 hours</p>
+                            <p><strong>Move In/Out:</strong> 3 - 4 hours</p>
+                          </div>
+                          <p className="text-xs text-emerald-700 mt-2 italic">
+                            *Most popular apartment size - perfect for our 2-hour minimum booking
+                          </p>
+                        </div>
+
                         <div className="grid md:grid-cols-2 gap-4">
                           <div>
                             <h5 className="font-semibold text-slate-800 mb-2">Regular Cleaning:</h5>
@@ -553,6 +567,11 @@ function App() {
                             </ul>
                           </div>
                         </div>
+                        
+                        <div className="bg-slate-50 p-3 rounded-lg">
+                          <p className="text-sm"><strong>💡 Pro Tip:</strong> For a 1BR/1BA apartment, we recommend booking 2 hours for regular cleaning. This gives enough time for thorough cleaning while staying cost-effective at $80-140 depending on service type.</p>
+                        </div>
+                        
                         <p><strong>You choose the hours</strong> when booking - pay only for the time you need!</p>
                       </div>
                     </AccordionContent>
