@@ -961,6 +961,161 @@ function App() {
         )}
       </main>
 
+      {/* FAQ Section */}
+      <section className="bg-slate-50 py-16">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <HelpCircle className="w-12 h-12 text-emerald-600 mx-auto mb-4" />
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">❓ Frequently Asked Questions</h2>
+            <p className="text-slate-600">Everything you need to know about our cleaning services</p>
+          </div>
+          
+          <Accordion type="single" collapsible className="w-full space-y-4">
+            <AccordionItem value="item-1" className="bg-white rounded-lg border">
+              <AccordionTrigger className="px-6 py-4 text-left">
+                How long does a residential basic cleaning take for a 1-bedroom, 1-bathroom apartment?
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4">
+                <div className="text-slate-600 space-y-3">
+                  <p>For a standard 1-bedroom, 1-bathroom apartment (approximately 600-800 sq ft), our basic cleaning service typically takes:</p>
+                  <ul className="list-disc pl-6 space-y-1">
+                    <li><strong>2-3 hours</strong> with one cleaner</li>
+                    <li><strong>1.5-2 hours</strong> with two cleaners working together</li>
+                  </ul>
+                  <p>This includes dusting, vacuuming, mopping, bathroom cleaning, kitchen cleaning, and general tidying. Time may vary based on the apartment's condition and specific cleaning requests.</p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-2" className="bg-white rounded-lg border">
+              <AccordionTrigger className="px-6 py-4 text-left">
+                How long does a deep cleaning take for a 1-bedroom, 1-bathroom apartment?
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4">
+                <div className="text-slate-600 space-y-3">
+                  <p>Deep cleaning for a 1-bedroom, 1-bathroom apartment typically requires:</p>
+                  <ul className="list-disc pl-6 space-y-1">
+                    <li><strong>4-6 hours</strong> with one cleaner</li>
+                    <li><strong>3-4 hours</strong> with two cleaners working together</li>
+                  </ul>
+                  <p>Deep cleaning includes everything in basic cleaning plus: baseboards, window sills, inside appliances, cabinet fronts, light fixtures, and detailed bathroom and kitchen deep cleaning. This service is perfect for move-ins or when you haven't had professional cleaning in a while.</p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-3" className="bg-white rounded-lg border">
+              <AccordionTrigger className="px-6 py-4 text-left">
+                How long does a move-in/move-out cleaning take for a 1-bedroom, 1-bathroom apartment?
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4">
+                <div className="text-slate-600 space-y-3">
+                  <p>Move-in/move-out cleaning for a 1-bedroom, 1-bathroom apartment typically takes:</p>
+                  <ul className="list-disc pl-6 space-y-1">
+                    <li><strong>5-7 hours</strong> with one cleaner</li>
+                    <li><strong>3-4 hours</strong> with two cleaners working together</li>
+                  </ul>
+                  <p>This comprehensive service includes deep cleaning of all areas, inside all cabinets and drawers, appliance cleaning inside and out, baseboard cleaning, and ensuring the space is move-in ready. This is our most thorough cleaning service.</p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-4" className="bg-white rounded-lg border">
+              <AccordionTrigger className="px-6 py-4 text-left">
+                What areas do you serve in Arizona?
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4">
+                <div className="text-slate-600">
+                  <p>We proudly serve the following Arizona communities:</p>
+                  <ul className="list-disc pl-6 mt-2 space-y-1">
+                    <li>Tempe</li>
+                    <li>Chandler</li>
+                    <li>Gilbert</li>
+                    <li>Mesa</li>
+                    <li>Phoenix</li>
+                    <li>Glendale</li>
+                    <li>Scottsdale</li>
+                    <li>Avondale</li>
+                  </ul>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-5" className="bg-white rounded-lg border">
+              <AccordionTrigger className="px-6 py-4 text-left">
+                What are your cleaning rates?
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4">
+                <div className="text-slate-600">
+                  <p>Our transparent hourly rates are:</p>
+                  <ul className="list-disc pl-6 mt-2 space-y-1">
+                    <li><strong>Regular Cleaning:</strong> $40/hour per cleaner</li>
+                    <li><strong>Deep Cleaning:</strong> $45/hour per cleaner</li>
+                    <li><strong>Move In/Out Cleaning:</strong> $70/hour per cleaner</li>
+                    <li><strong>Janitorial Services:</strong> $70/hour per cleaner</li>
+                  </ul>
+                  <p className="mt-2">All prices are per cleaner, per hour. You can select the number of hours based on your specific needs.</p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-6" className="bg-white rounded-lg border">
+              <AccordionTrigger className="px-6 py-4 text-left">
+                Are your cleaners licensed and insured?
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4">
+                <div className="text-slate-600">
+                  <p>Yes! All our cleaners are:</p>
+                  <ul className="list-disc pl-6 mt-2 space-y-1">
+                    <li>Licensed and bonded</li>
+                    <li>Fully insured for your protection</li>
+                    <li>Background checked for your safety and peace of mind</li>
+                    <li>Experienced professionals with excellent ratings</li>
+                  </ul>
+                  <p className="mt-2">We take your security and satisfaction seriously, which is why we only work with trusted, verified cleaning professionals.</p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-7" className="bg-white rounded-lg border">
+              <AccordionTrigger className="px-6 py-4 text-left">
+                How do I schedule a cleaning service?
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4">
+                <div className="text-slate-600">
+                  <p>Booking is easy! Simply:</p>
+                  <ol className="list-decimal pl-6 mt-2 space-y-1">
+                    <li>Click "Book Now" to start</li>
+                    <li>Select your desired cleaning service</li>
+                    <li>Choose your preferred cleaner</li>
+                    <li>Pick a date and time that works for you</li>
+                    <li>Enter your location and contact details</li>
+                    <li>Complete secure payment through our app</li>
+                  </ol>
+                  <p className="mt-2">You'll receive confirmation immediately and can contact us at (833) 735-TATI if you have any questions.</p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-8" className="bg-white rounded-lg border">
+              <AccordionTrigger className="px-6 py-4 text-left">
+                What if I'm not satisfied with the cleaning?
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4">
+                <div className="text-slate-600">
+                  <p>Your satisfaction is our guarantee! If you're not completely happy with our service:</p>
+                  <ul className="list-disc pl-6 mt-2 space-y-1">
+                    <li>Contact us within 24 hours at (833) 735-TATI</li>
+                    <li>We'll return to re-clean any missed areas at no additional cost</li>
+                    <li>Our goal is to ensure you're 100% satisfied with every cleaning</li>
+                  </ul>
+                  <p className="mt-2">We stand behind our work and are committed to making it right.</p>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-slate-900 text-white mt-16">
         <div className="max-w-7xl mx-auto px-6 py-12">
