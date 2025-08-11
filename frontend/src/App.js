@@ -5,7 +5,13 @@ import { Button } from './components/ui/button';
 import { Card } from './components/ui/card';
 import { Badge } from './components/ui/badge';
 import { Separator } from './components/ui/separator';
-import { Star, Clock, MapPin, Phone, Mail, User, Calendar as CalendarIcon, CheckCircle, ArrowLeft, Smartphone, Wifi, WifiOff } from 'lucide-react';
+import { 
+  Accordion, 
+  AccordionContent, 
+  AccordionItem, 
+  AccordionTrigger 
+} from './components/ui/accordion';
+import { Star, Clock, MapPin, Phone, Mail, User, Calendar as CalendarIcon, CheckCircle, ArrowLeft, Smartphone, Wifi, WifiOff, HelpCircle } from 'lucide-react';
 
 // PWA functionality
 import { 
