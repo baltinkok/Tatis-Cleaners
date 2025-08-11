@@ -722,6 +722,114 @@ function App() {
                     </AccordionContent>
                   </AccordionItem>
 
+                  <AccordionItem value="move-in-out-time" className="border border-slate-200 rounded-lg px-6">
+                    <AccordionTrigger className="text-left hover:text-emerald-600">
+                      <span className="font-semibold">How long does a move-in/move-out cleaning take for a 1-bedroom, 1-bathroom apartment?</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-slate-600 pt-4">
+                      <div className="space-y-4">
+                        <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
+                          <h5 className="font-semibold text-orange-800 mb-3">🏠 1 Bedroom, 1 Bathroom Move-In/Out Cleaning</h5>
+                          
+                          <div className="space-y-3">
+                            <div className="bg-white p-3 rounded border">
+                              <p className="font-semibold text-orange-700 mb-2">⏱️ Total Time Estimate:</p>
+                              <p className="text-sm font-medium">3 to 6 hours for one professional cleaner</p>
+                            </div>
+
+                            <div>
+                              <p className="font-semibold text-slate-800 mb-3">🧽 What Makes Move-In/Out Cleaning More Time-Intensive:</p>
+                              <p className="text-sm mb-2">Move-in/out cleaning is more detailed than basic or even deep cleaning. It includes:</p>
+                              
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                                <div className="flex items-center space-x-2">
+                                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                  <span>Inside cabinets and drawers</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                  <span>Inside oven and fridge</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                  <span>Interior windows</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                  <span>Baseboards and trim</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                  <span>Ceiling fans, vents</span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                  <span>Removing dust and residue left from moving</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div>
+                              <p className="font-semibold text-slate-800 mb-3">📊 Time Based on Condition:</p>
+                              
+                              <div className="overflow-x-auto">
+                                <table className="w-full text-sm border-collapse">
+                                  <thead>
+                                    <tr className="bg-slate-100">
+                                      <th className="text-left p-3 border font-semibold">Condition</th>
+                                      <th className="text-left p-3 border font-semibold">1 Cleaner</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr className="border-b">
+                                      <td className="p-3 border">
+                                        <div className="font-medium text-slate-800">Well-maintained</div>
+                                        <div className="text-xs text-slate-500">(recently lived in, not too dirty)</div>
+                                      </td>
+                                      <td className="p-3 border font-medium text-green-700">3–4 hours</td>
+                                    </tr>
+                                    <tr className="border-b">
+                                      <td className="p-3 border">
+                                        <div className="font-medium text-slate-800">Moderately dirty</div>
+                                        <div className="text-xs text-slate-500">(standard move-out condition)</div>
+                                      </td>
+                                      <td className="p-3 border font-medium text-amber-700">4–5 hours</td>
+                                    </tr>
+                                    <tr>
+                                      <td className="p-3 border">
+                                        <div className="font-medium text-slate-800">Very dirty/neglected</div>
+                                        <div className="text-xs text-slate-500">(grease, buildup, stains)</div>
+                                      </td>
+                                      <td className="p-3 border font-medium text-red-700">5–6+ hours</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+
+                            <div className="bg-slate-50 p-3 rounded-lg">
+                              <p className="text-sm"><strong>💰 Move-In/Out Cleaning Cost Examples for 1BR/1BA:</strong></p>
+                              <div className="text-sm space-y-1 mt-2">
+                                <p>• 3 hours (well-maintained): $210</p>
+                                <p>• 4 hours (standard condition): $280</p>
+                                <p>• 5 hours (moderately dirty): $350</p>
+                                <p>• 6 hours (very dirty/neglected): $420</p>
+                              </div>
+                            </div>
+
+                            <div className="bg-orange-50 border border-orange-200 p-3 rounded">
+                              <p className="text-orange-800 text-sm"><strong>🏡 Perfect for:</strong> Getting your security deposit back, preparing for new tenants, or ensuring your new home is spotless before moving in. This comprehensive cleaning covers areas that regular cleaning doesn't reach.</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="text-center">
+                          <p className="text-sm text-slate-600">Moving? Let us handle the deep cleaning! <strong>You choose the hours</strong> based on your apartment's condition.</p>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
                   <AccordionItem value="contact" className="border border-slate-200 rounded-lg px-6">
                     <AccordionTrigger className="text-left hover:text-emerald-600">
                       <span className="font-semibold">How can I contact Tati's Cleaners?</span>
