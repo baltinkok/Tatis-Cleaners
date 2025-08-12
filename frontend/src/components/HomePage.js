@@ -301,11 +301,9 @@ function HomePage() {
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200')] bg-cover bg-center opacity-10"></div>
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <div className="mb-8">
-            <img
-              src="https://customer-assets.clickfunnels.com/1f3a8e9e-6fe0-44c8-9e4c-0a55a0cb5df4/tatis-cleaners-logo-17275651900.png"
-              alt="Tati's Cleaners"
-              className="h-24 w-24 mx-auto mb-6"
-            />
+            <div className="h-24 w-24 bg-yellow-400 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-yellow-900 font-bold text-4xl">T</span>
+            </div>
           </div>
           <h1 className="text-5xl font-bold text-slate-900 mb-6">
             Professional Cleaning Services in Arizona
