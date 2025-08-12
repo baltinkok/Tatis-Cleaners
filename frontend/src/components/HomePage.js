@@ -736,9 +736,11 @@ function HomePage() {
         <div className="max-w-4xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-4 mb-6 md:mb-0">
-              <div className="h-10 w-10 bg-yellow-400 rounded-full flex items-center justify-center">
-                <span className="text-yellow-900 font-bold">T</span>
-              </div>
+              <img
+                src="https://customer-assets.emergentagent.com/job_cleanbook-1/artifacts/nww6p860_tatis-cleaners-high-resolution-logo.png"
+                alt="Tati's Cleaners"
+                className="h-10 w-10 rounded-full"
+              />
               <div>
                 <h3 className="text-xl font-bold">Tati's Cleaners</h3>
                 <p className="text-slate-400">Professional cleaning services</p>
