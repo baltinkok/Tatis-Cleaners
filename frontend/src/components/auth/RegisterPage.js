@@ -72,9 +72,11 @@ const RegisterPage = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <div className="h-16 w-16 bg-yellow-400 rounded-full flex items-center justify-center">
-            <span className="text-yellow-900 font-bold text-2xl">T</span>
-          </div>
+          <img
+            src="https://customer-assets.emergentagent.com/job_cleanbook-1/artifacts/nww6p860_tatis-cleaners-high-resolution-logo.png"
+            alt="Tati's Cleaners"
+            className="h-16 w-16 rounded-full"
+          />
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Create your account
