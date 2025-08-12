@@ -279,8 +279,11 @@ class TatisCleanersAPITester:
     
     def test_register_customer(self):
         """Test POST /api/auth/register for customer"""
+        import time
+        timestamp = str(int(time.time()))
+        
         customer_data = {
-            "email": "maria.gonzalez@example.com",
+            "email": f"maria.gonzalez.{timestamp}@example.com",
             "password": "SecurePass123!",
             "first_name": "Maria",
             "last_name": "Gonzalez",
@@ -300,6 +303,7 @@ class TatisCleanersAPITester:
             if 'access_token' in response and 'user' in response:
                 self.customer_token = response['access_token']
                 self.customer_user_id = response['user']['id']
+                self.customer_email = customer_data['email']  # Store for login test
                 print(f"   ✅ Customer registered with ID: {self.customer_user_id}")
                 print(f"   ✅ Token received: {self.customer_token[:20]}...")
                 return True
@@ -310,8 +314,11 @@ class TatisCleanersAPITester:
 
     def test_register_cleaner(self):
         """Test POST /api/auth/register for cleaner"""
+        import time
+        timestamp = str(int(time.time()))
+        
         cleaner_data = {
-            "email": "carlos.martinez@example.com",
+            "email": f"carlos.martinez.{timestamp}@example.com",
             "password": "CleanerPass456!",
             "first_name": "Carlos",
             "last_name": "Martinez",
@@ -331,6 +338,7 @@ class TatisCleanersAPITester:
             if 'access_token' in response and 'user' in response:
                 self.cleaner_token = response['access_token']
                 self.cleaner_user_id = response['user']['id']
+                self.cleaner_email = cleaner_data['email']  # Store for login test
                 print(f"   ✅ Cleaner registered with ID: {self.cleaner_user_id}")
                 print(f"   ✅ Token received: {self.cleaner_token[:20]}...")
                 return True
@@ -341,8 +349,11 @@ class TatisCleanersAPITester:
 
     def test_register_admin(self):
         """Test POST /api/auth/register for admin"""
+        import time
+        timestamp = str(int(time.time()))
+        
         admin_data = {
-            "email": "admin@tatiscleaners.com",
+            "email": f"admin.{timestamp}@tatiscleaners.com",
             "password": "AdminPass789!",
             "first_name": "Admin",
             "last_name": "User",
@@ -362,6 +373,7 @@ class TatisCleanersAPITester:
             if 'access_token' in response and 'user' in response:
                 self.admin_token = response['access_token']
                 self.admin_user_id = response['user']['id']
+                self.admin_email = admin_data['email']  # Store for login test
                 print(f"   ✅ Admin registered with ID: {self.admin_user_id}")
                 print(f"   ✅ Token received: {self.admin_token[:20]}...")
                 return True
@@ -372,8 +384,12 @@ class TatisCleanersAPITester:
 
     def test_duplicate_registration(self):
         """Test duplicate email registration should fail"""
+        if not hasattr(self, 'customer_email'):
+            print("❌ Cannot test - no customer email available")
+            return False
+            
         duplicate_data = {
-            "email": "maria.gonzalez@example.com",  # Same as customer
+            "email": self.customer_email,  # Use the same email as customer
             "password": "AnotherPass123!",
             "first_name": "Another",
             "last_name": "User",
@@ -392,8 +408,12 @@ class TatisCleanersAPITester:
 
     def test_login_customer(self):
         """Test POST /api/auth/login for customer"""
+        if not hasattr(self, 'customer_email'):
+            print("❌ Cannot test - no customer email available")
+            return False
+            
         login_data = {
-            "email": "maria.gonzalez@example.com",
+            "email": self.customer_email,
             "password": "SecurePass123!"
         }
 
@@ -419,8 +439,12 @@ class TatisCleanersAPITester:
 
     def test_login_cleaner(self):
         """Test POST /api/auth/login for cleaner"""
+        if not hasattr(self, 'cleaner_email'):
+            print("❌ Cannot test - no cleaner email available")
+            return False
+            
         login_data = {
-            "email": "carlos.martinez@example.com",
+            "email": self.cleaner_email,
             "password": "CleanerPass456!"
         }
 
@@ -445,8 +469,12 @@ class TatisCleanersAPITester:
 
     def test_invalid_login(self):
         """Test login with invalid credentials"""
+        if not hasattr(self, 'customer_email'):
+            print("❌ Cannot test - no customer email available")
+            return False
+            
         invalid_login = {
-            "email": "maria.gonzalez@example.com",
+            "email": self.customer_email,
             "password": "WrongPassword123!"
         }
 
