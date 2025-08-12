@@ -514,7 +514,7 @@ class TatisCleanersAPITester:
             "Unauthorized Access (should fail)",
             "GET",
             "api/auth/me",
-            401  # Expecting 401 Unauthorized
+            403  # Expecting 403 Forbidden (FastAPI returns this for missing auth)
         )
         
         return success
