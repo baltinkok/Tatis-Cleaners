@@ -75,21 +75,26 @@ def init_database():
     global client, db, cleaners_collection, bookings_collection, payment_transactions_collection
     global users_collection, cleaner_applications_collection, ratings_collection
     
-    max_retries = 3
+    max_retries = 5
     retry_count = 0
     
     while retry_count < max_retries:
         try:
             logger.info(f"Attempting to connect to MongoDB (attempt {retry_count + 1}/{max_retries})")
-            logger.info(f"MongoDB URL: {MONGO_URL[:20]}...")
+            logger.info(f"MongoDB URL: {MONGO_URL[:30]}...")
             
-            # Create client with timeout settings for Atlas
+            # Create client with Atlas-optimized settings
             client = MongoClient(
                 MONGO_URL, 
-                serverSelectionTimeoutMS=10000,  # 10 second timeout
-                connectTimeoutMS=10000,
-                maxPoolSize=10,
-                retryWrites=True
+                serverSelectionTimeoutMS=30000,  # 30 second timeout for Atlas
+                connectTimeoutMS=30000,
+                socketTimeoutMS=30000,
+                maxPoolSize=50,
+                minPoolSize=5,
+                retryWrites=True,
+                retryReads=True,
+                w='majority',
+                readPreference='primary'
             )
             
             # Test the connection
