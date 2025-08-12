@@ -268,6 +268,9 @@ function HomePage() {
               {isAuthenticated() ? (
                 <div className="flex items-center space-x-4">
                   <span className="text-slate-600">Hello, {user?.first_name}!</span>
+                  <span className="px-3 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700">
+                    {user?.role === 'customer' ? '👤 Customer' : user?.role === 'cleaner' ? '🧹 Cleaner' : '⚙️ Admin'}
+                  </span>
                   <a
                     href={user?.role === 'customer' ? '/customer/dashboard' : '/cleaner/dashboard'}
                     className="text-emerald-600 hover:text-emerald-700 font-medium"
@@ -277,18 +280,68 @@ function HomePage() {
                 </div>
               ) : (
                 <div className="flex items-center space-x-4">
-                  <a
-                    href="/login"
-                    className="text-slate-600 hover:text-slate-900 font-medium"
-                  >
-                    Sign In
-                  </a>
-                  <a
-                    href="/register"
-                    className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 font-medium"
-                  >
-                    Sign Up
-                  </a>
+                  <div className="relative group">
+                    <a
+                      href="/login"
+                      className="text-slate-600 hover:text-slate-900 font-medium"
+                    >
+                      Sign In
+                    </a>
+                    <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <div className="p-4">
+                        <div className="mb-3">
+                          <div className="flex items-center space-x-2 text-sm text-emerald-600 mb-1">
+                            <span>👤</span>
+                            <span className="font-medium">For Customers:</span>
+                          </div>
+                          <p className="text-xs text-gray-600">View bookings, reorder services, rate cleaners</p>
+                        </div>
+                        <div>
+                          <div className="flex items-center space-x-2 text-sm text-blue-600 mb-1">
+                            <span>🧹</span>
+                            <span className="font-medium">For Cleaners:</span>
+                          </div>
+                          <p className="text-xs text-gray-600">Manage jobs, track earnings, view schedule</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="relative group">
+                    <a
+                      href="/register"
+                      className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 font-medium"
+                    >
+                      Sign Up
+                    </a>
+                    <div className="absolute top-full right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <div className="p-4">
+                        <div className="mb-3 pb-3 border-b">
+                          <div className="flex items-center space-x-2 text-sm text-emerald-600 mb-2">
+                            <span>👤</span>
+                            <span className="font-medium">Join as Customer</span>
+                          </div>
+                          <ul className="text-xs text-gray-600 space-y-1">
+                            <li>• Book trusted cleaners</li>
+                            <li>• Track service history</li>
+                            <li>• Rate and review</li>
+                            <li>• One-click reordering</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <div className="flex items-center space-x-2 text-sm text-blue-600 mb-2">
+                            <span>🧹</span>
+                            <span className="font-medium">Join as Cleaner</span>
+                          </div>
+                          <ul className="text-xs text-gray-600 space-y-1">
+                            <li>• Flexible work schedule</li>
+                            <li>• Set your own rates</li>
+                            <li>• Track earnings</li>
+                            <li>• Background check included</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
