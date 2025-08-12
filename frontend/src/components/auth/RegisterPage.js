@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 
 const RegisterPage = () => {
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -10,7 +11,7 @@ const RegisterPage = () => {
     first_name: '',
     last_name: '',
     phone: '',
-    role: 'customer'
+    role: searchParams.get('role') || 'customer'
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
