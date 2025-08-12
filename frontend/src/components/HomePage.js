@@ -389,6 +389,112 @@ function HomePage() {
         </div>
       </div>
 
+      {/* User Types Section */}
+      <section className="bg-white py-16">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Join Tati's Cleaners</h2>
+            <p className="text-xl text-slate-600">Whether you need cleaning services or want to provide them</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* For Customers */}
+            <div className="bg-emerald-50 border-2 border-emerald-200 rounded-xl p-8 text-center">
+              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-2xl">👤</span>
+              </div>
+              <h3 className="text-2xl font-bold text-emerald-700 mb-4">For Customers</h3>
+              <p className="text-slate-600 mb-6">Book trusted, professional cleaners for your home or office</p>
+              
+              <div className="text-left mb-6">
+                <h4 className="font-semibold text-slate-900 mb-3">What you get:</h4>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mr-2" />
+                    Book verified, insured cleaners
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mr-2" />
+                    Track your service history
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mr-2" />
+                    Rate and review cleaners
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mr-2" />
+                    One-click reordering
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-emerald-600 mr-2" />
+                    Secure online payments
+                  </li>
+                </ul>
+              </div>
+              
+              <div className="space-y-3">
+                <a
+                  href="/register?role=customer"
+                  className="w-full bg-emerald-600 text-white py-3 px-6 rounded-lg hover:bg-emerald-700 transition-colors inline-block"
+                >
+                  Sign Up as Customer
+                </a>
+                <p className="text-xs text-slate-500">
+                  Already have an account? <a href="/login" className="text-emerald-600 hover:text-emerald-700">Sign In</a>
+                </p>
+              </div>
+            </div>
+
+            {/* For Cleaners */}
+            <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-8 text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-2xl">🧹</span>
+              </div>
+              <h3 className="text-2xl font-bold text-blue-700 mb-4">For Cleaners</h3>
+              <p className="text-slate-600 mb-6">Join our network of professional cleaning service providers</p>
+              
+              <div className="text-left mb-6">
+                <h4 className="font-semibold text-slate-900 mb-3">What you get:</h4>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-blue-600 mr-2" />
+                    Flexible work schedule
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-blue-600 mr-2" />
+                    Set your own hourly rates
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-blue-600 mr-2" />
+                    Accept/decline job offers
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-blue-600 mr-2" />
+                    Track earnings and performance
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-blue-600 mr-2" />
+                    Background check included
+                  </li>
+                </ul>
+              </div>
+              
+              <div className="space-y-3">
+                <a
+                  href="/register?role=cleaner"
+                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors inline-block"
+                >
+                  Apply as Cleaner
+                </a>
+                <p className="text-xs text-slate-500">
+                  Already registered? <a href="/login" className="text-blue-600 hover:text-blue-700">Sign In</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Booking Section */}
       <main className="max-w-4xl mx-auto px-6 py-16" id="book-now">
         {currentStep === 1 && (
