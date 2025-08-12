@@ -63,7 +63,11 @@
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all"
+      "not op_mini all",
+      "ie >= 11",
+      "chrome >= 60",
+      "firefox >= 60",
+      "safari >= 10"
     ],
     "development": [
       "last 1 chrome version",
