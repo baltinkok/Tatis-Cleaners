@@ -56,9 +56,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Configuration
+MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
+DB_NAME = os.getenv("DB_NAME", "tatiscleaners_production")
+STRIPE_API_KEY = os.getenv("STRIPE_API_KEY", "")
+
+# Environment detection
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+IS_PRODUCTION = ENVIRONMENT.lower() in ["production", "prod"]
+
+logger.info(f"Starting application in {ENVIRONMENT} environment")
+logger.info(f"Database name: {DB_NAME}")
+logger.info(f"Production mode: {IS_PRODUCTION}")
+
 # MongoDB connection with improved error handling
-MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017/')
-DB_NAME = os.environ.get('DB_NAME', 'tatis_cleaners')
 
 # Global variables for database connections
 client = None
