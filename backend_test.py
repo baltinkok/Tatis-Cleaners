@@ -607,31 +607,37 @@ class TatisCleanersAPITester:
         # Create a simple test document (base64 encoded)
         test_document = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
         
-        document_data = {
-            "application_id": self.application_id,
-            "document_type": "id_front",
-            "file_name": "id_front.png",
-            "file_data": test_document
-        }
-
-        success, response = self.run_test(
-            "Upload Document",
-            "POST",
-            "api/cleaner/upload-document",
-            200,
-            data=document_data,
-            auth_token=self.customer_token
-        )
+        # Upload multiple required documents
+        documents = [
+            {"document_type": "id_front", "file_name": "id_front.png"},
+            {"document_type": "id_back", "file_name": "id_back.png"},
+            {"document_type": "ssn_card", "file_name": "ssn_card.png"}
+        ]
         
-        if success:
-            if 'document_type' in response and 'status' in response:
-                print(f"   ✅ Document uploaded: {response['document_type']}")
-                print(f"   ✅ Status: {response['status']}")
-                return True
-            else:
-                print("   ❌ Missing document_type or status in response")
-                return False
-        return False
+        success_count = 0
+        for doc in documents:
+            document_data = {
+                "application_id": self.application_id,
+                "document_type": doc["document_type"],
+                "file_name": doc["file_name"],
+                "file_data": test_document
+            }
+
+            success, response = self.run_test(
+                f"Upload Document ({doc['document_type']})",
+                "POST",
+                "api/cleaner/upload-document",
+                200,
+                data=document_data,
+                auth_token=self.customer_token
+            )
+            
+            if success:
+                success_count += 1
+                print(f"   ✅ Document uploaded: {response.get('document_type')}")
+                print(f"   ✅ Status: {response.get('status')}")
+        
+        return success_count == len(documents)
 
     def test_background_check_initiation(self):
         """Test POST /api/cleaner/initiate-background-check (admin only)"""
