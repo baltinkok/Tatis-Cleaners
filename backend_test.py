@@ -23,11 +23,15 @@ class TatisCleanersAPITester:
         self.admin_user_id = None
         self.application_id = None
 
-    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None, auth_token=None):
         """Run a single API test"""
         url = f"{self.base_url}/{endpoint}"
         if headers is None:
             headers = {'Content-Type': 'application/json'}
+        
+        # Add authorization header if token provided
+        if auth_token:
+            headers['Authorization'] = f'Bearer {auth_token}'
 
         self.tests_run += 1
         print(f"\n🔍 Testing {name}...")
