@@ -58,6 +58,19 @@ const LoginPage = () => {
           Sign in to your account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
+          Access your dashboard to manage bookings or jobs
+        </p>
+        <div className="mt-4 flex justify-center space-x-8 text-xs">
+          <div className="text-center">
+            <span className="text-emerald-600">👤 Customers:</span>
+            <p className="text-gray-500">Book & manage cleanings</p>
+          </div>
+          <div className="text-center">
+            <span className="text-blue-600">🧹 Cleaners:</span>
+            <p className="text-gray-500">Manage jobs & earnings</p>
+          </div>
+        </div>
+        <p className="mt-4 text-center text-sm text-gray-600">
           Or{' '}
           <Link
             to="/register"
