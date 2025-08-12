@@ -357,9 +357,11 @@ function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/10 to-blue-600/10"></div>
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <div className="mb-8">
-            <div className="h-24 w-24 bg-yellow-400 rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="text-yellow-900 font-bold text-4xl">T</span>
-            </div>
+            <img
+              src="https://customer-assets.emergentagent.com/job_cleanbook-1/artifacts/nww6p860_tatis-cleaners-high-resolution-logo.png"
+              alt="Tati's Cleaners"
+              className="h-24 w-24 mx-auto mb-6 rounded-full"
+            />
           </div>
           <h1 className="text-5xl font-bold text-slate-900 mb-6">
             Professional Cleaning Services in Arizona
