@@ -65,6 +65,9 @@ db = None
 cleaners_collection = None
 bookings_collection = None
 payment_transactions_collection = None
+users_collection = None
+cleaner_applications_collection = None
+ratings_collection = None
 
 def init_database():
     """Initialize database connection with retry logic"""
