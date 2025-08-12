@@ -15,8 +15,7 @@ import json
 from auth_models import *
 from auth_handler import auth_handler
 from auth_middleware import get_current_user, require_customer, require_cleaner, require_admin, require_any_auth
-# from background_check_service import background_check_service  # Mock service
-from checkr_background_service import checkr_service as background_check_service  # Real service
+from background_check_service import background_check_service  # Use mock service by default
 from file_upload_service import file_upload_service
 
 # Configure logging with more details for production
