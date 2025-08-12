@@ -50,11 +50,9 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <img
-            className="h-16 w-16"
-            src="https://customer-assets.clickfunnels.com/1f3a8e9e-6fe0-44c8-9e4c-0a55a0cb5df4/tatis-cleaners-logo-17275651900.png"
-            alt="Tati's Cleaners"
-          />
+          <div className="h-16 w-16 bg-yellow-400 rounded-full flex items-center justify-center">
+            <span className="text-yellow-900 font-bold text-2xl">T</span>
+          </div>
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Sign in to your account
