@@ -569,232 +569,532 @@ async def get_booking(booking_id: str):
         logger.error(f"Error fetching booking: {e}")
         raise HTTPException(status_code=500, detail="Error fetching booking")
 
-@app.get("/api/service-areas")
-async def get_service_areas():
-    """Get all service areas"""
-    return {"areas": SERVICE_AREAS}
+# === AUTHENTICATION ENDPOINTS ===
 
-@app.get("/api/services")
-async def get_services():
-    """Get all service types"""
-    return {"services": SERVICE_PACKAGES}
-
-@app.post("/api/bookings")
-async def create_booking(booking: BookingRequest):
-    """Create a new booking"""
+@app.post("/api/auth/register", response_model=TokenResponse)
+async def register_user(user_data: UserRegistration):
+    """Register a new user"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
     try:
-        # Validate service type
-        if booking.service_type not in SERVICE_PACKAGES:
-            raise HTTPException(status_code=400, detail="Invalid service type")
+        # Check if user already exists
+        existing_user = users_collection.find_one({"email": user_data.email})
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
         
-        # Validate cleaner exists
-        cleaner = cleaners_collection.find_one({"id": booking.cleaner_id})
-        if not cleaner:
-            raise HTTPException(status_code=400, detail="Cleaner not found")
+        # Create new user
+        user_id = str(uuid.uuid4())
+        hashed_password = auth_handler.encode_password(user_data.password)
         
-        # Validate service area
-        if booking.location not in SERVICE_AREAS:
-            raise HTTPException(status_code=400, detail="Service area not supported")
-        
-        # Calculate total amount
-        service_price = SERVICE_PACKAGES[booking.service_type]["base_price"]
-        total_amount = service_price * booking.hours
-        
-        # Create booking
-        booking_id = str(uuid.uuid4())
-        booking_data = {
-            "id": booking_id,
-            "service_type": booking.service_type,
-            "cleaner_id": booking.cleaner_id,
-            "cleaner_name": cleaner["name"],
-            "date": booking.date,
-            "time": booking.time,
-            "hours": booking.hours,
-            "location": booking.location,
-            "address": booking.address,
-            "customer_name": booking.customer_name,
-            "customer_email": booking.customer_email,
-            "customer_phone": booking.customer_phone,
-            "special_instructions": booking.special_instructions,
-            "total_amount": total_amount,
-            "status": "pending_payment",
-            "created_at": datetime.now().isoformat(),
-            "payment_status": "pending"
+        user_document = {
+            "id": user_id,
+            "email": user_data.email,
+            "password": hashed_password,
+            "first_name": user_data.first_name,
+            "last_name": user_data.last_name,
+            "phone": user_data.phone,
+            "role": user_data.role.value,
+            "is_active": True,
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
         }
         
-        bookings_collection.insert_one(booking_data)
+        users_collection.insert_one(user_document)
         
-        return {
-            "booking_id": booking_id,
-            "total_amount": total_amount,
-            "message": "Booking created successfully"
-        }
+        # Generate token
+        token = auth_handler.encode_token(user_id, user_data.email, user_data.role.value)
         
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/api/checkout/session")
-async def create_checkout_session(payment: PaymentRequest, request: Request):
-    """Create Stripe checkout session for booking payment"""
-    try:
-        # Get booking details
-        booking = bookings_collection.find_one({"id": payment.booking_id})
-        if not booking:
-            raise HTTPException(status_code=404, detail="Booking not found")
-        
-        if booking["payment_status"] == "paid":
-            raise HTTPException(status_code=400, detail="Booking already paid")
-        
-        # Initialize Stripe checkout
-        if not STRIPE_API_KEY:
-            raise HTTPException(status_code=500, detail="Stripe API key not configured")
-        
-        host_url = payment.origin_url
-        webhook_url = f"{host_url}/api/webhook/stripe"
-        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
-        
-        # Create checkout session
-        success_url = f"{host_url}?session_id={{CHECKOUT_SESSION_ID}}&booking_id={payment.booking_id}"
-        cancel_url = f"{host_url}?cancelled=true"
-        
-        checkout_request = CheckoutSessionRequest(
-            amount=float(booking["total_amount"]),
-            currency="usd",
-            success_url=success_url,
-            cancel_url=cancel_url,
-            metadata={
-                "booking_id": payment.booking_id,
-                "customer_email": booking["customer_email"],
-                "service_type": booking["service_type"]
-            }
+        # Return response
+        user_response = UserResponse(
+            id=user_id,
+            email=user_data.email,
+            first_name=user_data.first_name,
+            last_name=user_data.last_name,
+            phone=user_data.phone,
+            role=user_data.role,
+            is_active=True,
+            created_at=user_document["created_at"]
         )
         
-        session = await stripe_checkout.create_checkout_session(checkout_request)
+        return TokenResponse(
+            access_token=token,
+            user=user_response
+        )
         
-        # Create payment transaction record
-        payment_transaction = {
-            "id": str(uuid.uuid4()),
-            "session_id": session.session_id,
-            "booking_id": payment.booking_id,
-            "amount": float(booking["total_amount"]),
-            "currency": "usd",
-            "payment_status": "pending",
-            "status": "initiated",
-            "customer_email": booking["customer_email"],
-            "created_at": datetime.now().isoformat(),
-            "metadata": checkout_request.metadata
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Registration error: {e}")
+        raise HTTPException(status_code=500, detail="Registration failed")
+
+@app.post("/api/auth/login", response_model=TokenResponse)
+async def login_user(login_data: UserLogin):
+    """Login user"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        # Find user
+        user = users_collection.find_one({"email": login_data.email})
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+        
+        # Verify password
+        if not auth_handler.verify_password(login_data.password, user["password"]):
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+        
+        # Check if user is active
+        if not user.get("is_active", True):
+            raise HTTPException(status_code=401, detail="Account is deactivated")
+        
+        # Update last login
+        users_collection.update_one(
+            {"id": user["id"]},
+            {"$set": {"last_login": datetime.utcnow()}}
+        )
+        
+        # Generate token
+        token = auth_handler.encode_token(user["id"], user["email"], user["role"])
+        
+        # Return response
+        user_response = UserResponse(
+            id=user["id"],
+            email=user["email"],
+            first_name=user["first_name"],
+            last_name=user["last_name"],
+            phone=user.get("phone"),
+            role=UserRole(user["role"]),
+            is_active=user["is_active"],
+            created_at=user["created_at"]
+        )
+        
+        return TokenResponse(
+            access_token=token,
+            user=user_response
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Login error: {e}")
+        raise HTTPException(status_code=500, detail="Login failed")
+
+@app.get("/api/auth/me", response_model=UserResponse)
+async def get_current_user_info(current_user: dict = Depends(get_current_user)):
+    """Get current user information"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        user = users_collection.find_one({"id": current_user["user_id"]})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        return UserResponse(
+            id=user["id"],
+            email=user["email"],
+            first_name=user["first_name"],
+            last_name=user["last_name"],
+            phone=user.get("phone"),
+            role=UserRole(user["role"]),
+            is_active=user["is_active"],
+            created_at=user["created_at"]
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get user error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get user information")
+
+# === CLEANER APPLICATION ENDPOINTS ===
+
+@app.post("/api/cleaner/apply")
+async def submit_cleaner_application(
+    application: CleanerApplicationRequest,
+    current_user: dict = Depends(require_customer)
+):
+    """Submit cleaner application"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        # Check if user already has an application
+        existing_app = cleaner_applications_collection.find_one({"user_id": current_user["user_id"]})
+        if existing_app:
+            raise HTTPException(status_code=400, detail="Application already exists")
+        
+        # Create application
+        application_id = str(uuid.uuid4())
+        app_data = {
+            "application_id": application_id,
+            "user_id": current_user["user_id"],
+            "status": CleanerStatus.DOCUMENTS_REQUIRED.value,
+            "personal_info": {
+                "ssn": application.ssn,
+                "date_of_birth": application.date_of_birth,
+                "address": application.address,
+                "city": application.city,
+                "state": application.state,
+                "zip_code": application.zip_code,
+                "emergency_contact_name": application.emergency_contact_name,
+                "emergency_contact_phone": application.emergency_contact_phone,
+                "has_vehicle": application.has_vehicle,
+                "has_cleaning_experience": application.has_cleaning_experience,
+                "years_experience": application.years_experience
+            },
+            "hourly_rate": application.hourly_rate,
+            "service_areas": application.service_areas,
+            "specialties": application.specialties,
+            "documents": {},
+            "background_check_results": {},
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
         }
         
-        payment_transactions_collection.insert_one(payment_transaction)
+        cleaner_applications_collection.insert_one(app_data)
         
         return {
-            "url": session.url,
-            "session_id": session.session_id
+            "message": "Application submitted successfully",
+            "application_id": application_id,
+            "status": CleanerStatus.DOCUMENTS_REQUIRED.value,
+            "next_steps": "Please upload required documents: ID (front and back), SSN card, and work permit (if applicable)"
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Application submission error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit application")
 
-@app.get("/api/checkout/status/{session_id}")
-async def get_checkout_status(session_id: str):
-    """Get payment status for a checkout session"""
+@app.post("/api/cleaner/upload-document")
+async def upload_document(
+    document: DocumentUpload,
+    current_user: dict = Depends(require_customer)
+):
+    """Upload document for cleaner application"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
     try:
-        # Get payment transaction
-        transaction = payment_transactions_collection.find_one({"session_id": session_id})
-        if not transaction:
-            raise HTTPException(status_code=404, detail="Payment session not found")
+        # Verify application ownership
+        application = cleaner_applications_collection.find_one({
+            "application_id": document.application_id,
+            "user_id": current_user["user_id"]
+        })
         
-        # Initialize Stripe checkout
-        if not STRIPE_API_KEY:
-            raise HTTPException(status_code=500, detail="Stripe API key not configured")
+        if not application:
+            raise HTTPException(status_code=404, detail="Application not found")
         
-        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
+        # Save document
+        file_info = await file_upload_service.save_document(
+            document.file_data,
+            document.file_name,
+            document.application_id,
+            document.document_type.value
+        )
         
-        # Get status from Stripe  
-        checkout_status = await stripe_checkout.get_checkout_status(session_id)
-        
-        # Update transaction status
+        # Update application with document info
         update_data = {
-            "status": checkout_status.status,
-            "payment_status": checkout_status.payment_status,
-            "updated_at": datetime.now().isoformat()
+            f"documents.{document.document_type.value}": file_info,
+            "updated_at": datetime.utcnow()
         }
         
-        payment_transactions_collection.update_one(
-            {"session_id": session_id},
+        # Check if all required documents are uploaded
+        required_docs = [DocumentType.ID_FRONT, DocumentType.ID_BACK, DocumentType.SSN_CARD]
+        current_docs = application.get("documents", {})
+        current_docs[document.document_type.value] = file_info
+        
+        all_required_uploaded = all(doc.value in current_docs for doc in required_docs)
+        
+        if all_required_uploaded and application["status"] == CleanerStatus.DOCUMENTS_REQUIRED.value:
+            update_data["status"] = CleanerStatus.DOCUMENTS_SUBMITTED.value
+        
+        cleaner_applications_collection.update_one(
+            {"application_id": document.application_id},
             {"$set": update_data}
         )
         
-        # Update booking status if payment successful
-        if checkout_status.payment_status == "paid" and transaction["payment_status"] != "paid":
-            bookings_collection.update_one(
-                {"id": transaction["booking_id"]},
-                {"$set": {
-                    "payment_status": "paid",
-                    "status": "confirmed",
-                    "confirmed_at": datetime.now().isoformat()
-                }}
-            )
+        return {
+            "message": "Document uploaded successfully",
+            "document_type": document.document_type.value,
+            "status": update_data.get("status", application["status"])
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Document upload error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to upload document")
+
+@app.post("/api/cleaner/initiate-background-check")
+async def initiate_background_check(
+    application_id: str,
+    current_user: dict = Depends(require_admin)
+):
+    """Initiate background check for cleaner application (admin only)"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        # Get application
+        application = cleaner_applications_collection.find_one({"application_id": application_id})
+        if not application:
+            raise HTTPException(status_code=404, detail="Application not found")
+        
+        if application["status"] != CleanerStatus.DOCUMENTS_SUBMITTED.value:
+            raise HTTPException(status_code=400, detail="Application not ready for background check")
+        
+        # Initiate background check
+        check_result = await background_check_service.initiate_background_check({
+            "application_id": application_id,
+            "personal_info": application["personal_info"]
+        })
+        
+        # Update application status
+        cleaner_applications_collection.update_one(
+            {"application_id": application_id},
+            {"$set": {
+                "status": CleanerStatus.BACKGROUND_CHECK.value,
+                "background_check_id": check_result["check_id"],
+                "background_check_initiated_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
+            }}
+        )
         
         return {
-            "status": checkout_status.status,
-            "payment_status": checkout_status.payment_status,
-            "amount_total": checkout_status.amount_total,
-            "currency": checkout_status.currency,
-            "booking_id": transaction["booking_id"]
+            "message": "Background check initiated",
+            "check_id": check_result["check_id"],
+            "estimated_completion": check_result.get("estimated_completion")
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Background check initiation error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to initiate background check")
+
+# === DASHBOARD ENDPOINTS ===
+
+@app.get("/api/customer/dashboard")
+async def get_customer_dashboard(current_user: dict = Depends(require_customer)):
+    """Get customer dashboard data"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        # Get user's bookings
+        user_bookings = list(bookings_collection.find(
+            {"customer_email": current_user["email"]},
+            {"_id": 0}
+        ).sort("created_at", -1))
+        
+        # Calculate stats
+        total_bookings = len(user_bookings)
+        completed_bookings = len([b for b in user_bookings if b.get("status") == "completed"])
+        upcoming_bookings = len([b for b in user_bookings if b.get("status") in ["confirmed", "in_progress"]])
+        total_spent = sum(float(b.get("total_amount", 0)) for b in user_bookings if b.get("payment_status") == "paid")
+        
+        # Get favorite cleaners (most booked)
+        cleaner_counts = {}
+        for booking in user_bookings:
+            cleaner_id = booking.get("cleaner_id")
+            if cleaner_id:
+                cleaner_counts[cleaner_id] = cleaner_counts.get(cleaner_id, 0) + 1
+        
+        favorite_cleaners = []
+        for cleaner_id, count in sorted(cleaner_counts.items(), key=lambda x: x[1], reverse=True)[:3]:
+            cleaner = cleaners_collection.find_one({"id": cleaner_id}, {"_id": 0})
+            if cleaner:
+                favorite_cleaners.append({
+                    "cleaner": cleaner,
+                    "booking_count": count
+                })
+        
+        return {
+            "stats": {
+                "total_bookings": total_bookings,
+                "completed_bookings": completed_bookings,
+                "upcoming_bookings": upcoming_bookings,
+                "total_spent": total_spent,
+                "favorite_cleaners": favorite_cleaners
+            },
+            "recent_bookings": user_bookings[:5],
+            "upcoming_bookings": [b for b in user_bookings if b.get("status") in ["confirmed", "in_progress"]][:5]
         }
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Customer dashboard error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to load dashboard")
 
-@app.post("/api/webhook/stripe")
-async def stripe_webhook(request: Request):
-    """Handle Stripe webhooks"""
+@app.get("/api/cleaner/dashboard")
+async def get_cleaner_dashboard(current_user: dict = Depends(require_cleaner)):
+    """Get cleaner dashboard data"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
     try:
-        body = await request.body()
-        signature = request.headers.get("Stripe-Signature")
+        # Find cleaner record
+        cleaner = cleaners_collection.find_one({"email": current_user["email"]})
+        if not cleaner:
+            raise HTTPException(status_code=404, detail="Cleaner profile not found")
         
-        if not STRIPE_API_KEY:
-            raise HTTPException(status_code=500, detail="Stripe API key not configured")
+        # Get cleaner's jobs
+        cleaner_jobs = list(bookings_collection.find(
+            {"cleaner_id": cleaner["id"]},
+            {"_id": 0}
+        ).sort("created_at", -1))
         
-        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
-        webhook_response = await stripe_checkout.handle_webhook(body, signature)
+        # Calculate stats
+        total_jobs = len(cleaner_jobs)
+        completed_jobs = len([j for j in cleaner_jobs if j.get("status") == "completed"])
+        upcoming_jobs = len([j for j in cleaner_jobs if j.get("status") in ["confirmed", "in_progress"]])
+        total_earnings = sum(float(j.get("total_amount", 0)) for j in cleaner_jobs if j.get("payment_status") == "paid")
         
-        # Process webhook event
-        if webhook_response.event_type == "checkout.session.completed":
-            # Update payment transaction
-            payment_transactions_collection.update_one(
-                {"session_id": webhook_response.session_id},
-                {"$set": {
-                    "payment_status": webhook_response.payment_status,
-                    "webhook_processed_at": datetime.now().isoformat()
-                }}
-            )
-            
-            # Update booking status
-            transaction = payment_transactions_collection.find_one({"session_id": webhook_response.session_id})
-            if transaction:
-                bookings_collection.update_one(
-                    {"id": transaction["booking_id"]},
-                    {"$set": {
-                        "payment_status": "paid",
-                        "status": "confirmed",
-                        "confirmed_at": datetime.now().isoformat()
-                    }}
-                )
+        # Get ratings
+        cleaner_ratings = list(ratings_collection.find({"cleaner_id": cleaner["id"]}))
+        average_rating = sum(r["rating"] for r in cleaner_ratings) / len(cleaner_ratings) if cleaner_ratings else 0
         
-        return {"status": "success"}
+        # Get pending requests (new bookings)
+        pending_requests = len([j for j in cleaner_jobs if j.get("status") == "pending_acceptance"])
         
+        return {
+            "stats": {
+                "total_jobs": total_jobs,
+                "completed_jobs": completed_jobs,
+                "upcoming_jobs": upcoming_jobs,
+                "total_earnings": total_earnings,
+                "average_rating": round(average_rating, 1),
+                "pending_requests": pending_requests
+            },
+            "recent_jobs": cleaner_jobs[:5],
+            "upcoming_jobs": [j for j in cleaner_jobs if j.get("status") in ["confirmed", "in_progress"]][:5],
+            "pending_jobs": [j for j in cleaner_jobs if j.get("status") == "pending_acceptance"][:5]
+        }
+        
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Cleaner dashboard error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to load dashboard")
 
-@app.get("/api/bookings/{booking_id}")
-async def get_booking(booking_id: str):
-    """Get booking details"""
-    booking = bookings_collection.find_one({"id": booking_id}, {"_id": 0})
-    if not booking:
-        raise HTTPException(status_code=404, detail="Booking not found")
-    return booking
+@app.post("/api/bookings/{booking_id}/rate")
+async def rate_booking(
+    booking_id: str,
+    rating_data: BookingRating,
+    current_user: dict = Depends(require_customer)
+):
+    """Rate a completed booking"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        # Verify booking ownership
+        booking = bookings_collection.find_one({
+            "id": booking_id,
+            "customer_email": current_user["email"]
+        })
+        
+        if not booking:
+            raise HTTPException(status_code=404, detail="Booking not found")
+        
+        if booking.get("status") != "completed":
+            raise HTTPException(status_code=400, detail="Can only rate completed bookings")
+        
+        # Check if already rated
+        existing_rating = ratings_collection.find_one({"booking_id": booking_id})
+        if existing_rating:
+            raise HTTPException(status_code=400, detail="Booking already rated")
+        
+        # Create rating
+        rating_doc = {
+            "id": str(uuid.uuid4()),
+            "booking_id": booking_id,
+            "cleaner_id": rating_data.cleaner_id,
+            "customer_id": current_user["user_id"],
+            "rating": rating_data.rating,
+            "review": rating_data.review,
+            "created_at": datetime.utcnow()
+        }
+        
+        ratings_collection.insert_one(rating_doc)
+        
+        # Update cleaner's average rating
+        cleaner_ratings = list(ratings_collection.find({"cleaner_id": rating_data.cleaner_id}))
+        avg_rating = sum(r["rating"] for r in cleaner_ratings) / len(cleaner_ratings)
+        
+        cleaners_collection.update_one(
+            {"id": rating_data.cleaner_id},
+            {"$set": {"rating": round(avg_rating, 1)}}
+        )
+        
+        return {"message": "Rating submitted successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Rating submission error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit rating")
+
+@app.post("/api/bookings/{booking_id}/accept")
+async def accept_booking(
+    booking_id: str,
+    acceptance: BookingAcceptance,
+    current_user: dict = Depends(require_cleaner)
+):
+    """Accept or decline a booking"""
+    if not database_connected:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        # Find cleaner record
+        cleaner = cleaners_collection.find_one({"email": current_user["email"]})
+        if not cleaner:
+            raise HTTPException(status_code=404, detail="Cleaner profile not found")
+        
+        # Verify booking
+        booking = bookings_collection.find_one({
+            "id": booking_id,
+            "cleaner_id": cleaner["id"]
+        })
+        
+        if not booking:
+            raise HTTPException(status_code=404, detail="Booking not found")
+        
+        if booking.get("status") != "pending_acceptance":
+            raise HTTPException(status_code=400, detail="Booking not available for acceptance")
+        
+        # Update booking status
+        if acceptance.accepted:
+            new_status = "confirmed"
+            message = "Booking accepted successfully"
+        else:
+            new_status = "declined"
+            message = "Booking declined"
+        
+        bookings_collection.update_one(
+            {"id": booking_id},
+            {"$set": {
+                "status": new_status,
+                "cleaner_response": {
+                    "accepted": acceptance.accepted,
+                    "reason": acceptance.reason,
+                    "responded_at": datetime.utcnow()
+                },
+                "updated_at": datetime.utcnow()
+            }}
+        )
+        
+        return {"message": message}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Booking acceptance error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to process booking response")
+
+# Keep existing endpoints below...
 
 # Initialize sample data on startup with proper error handling
 @app.on_event("startup")
