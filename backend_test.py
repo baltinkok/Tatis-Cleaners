@@ -807,34 +807,67 @@ class TatisCleanersAPITester:
         return success
 
 def main():
-    print("🧪 Starting Tati's Cleaners API Tests")
-    print("=" * 50)
+    print("🧪 Starting Tati's Cleaners API Tests - Authentication & User Management")
+    print("=" * 70)
     
     tester = TatisCleanersAPITester()
     
-    # Run all tests
-    tests = [
-        tester.test_get_services,
-        tester.test_get_cleaners,
-        tester.test_get_service_areas,
-        tester.test_create_booking,
-        tester.test_get_booking,
-        tester.test_create_checkout_session,
-        tester.test_invalid_booking
+    # Run authentication tests first
+    auth_tests = [
+        ("Authentication Tests", [
+            tester.test_register_customer,
+            tester.test_register_cleaner,
+            tester.test_register_admin,
+            tester.test_duplicate_registration,
+            tester.test_login_customer,
+            tester.test_login_cleaner,
+            tester.test_invalid_login,
+            tester.test_get_current_user_customer,
+            tester.test_get_current_user_cleaner,
+            tester.test_unauthorized_access
+        ]),
+        ("Cleaner Application Tests", [
+            tester.test_cleaner_application,
+            tester.test_duplicate_application,
+            tester.test_document_upload,
+            tester.test_background_check_initiation,
+            tester.test_background_check_unauthorized
+        ]),
+        ("Dashboard Tests", [
+            tester.test_customer_dashboard,
+            tester.test_cleaner_dashboard,
+            tester.test_dashboard_unauthorized
+        ]),
+        ("Authorization Tests", [
+            tester.test_booking_rating_unauthorized,
+            tester.test_booking_acceptance_unauthorized
+        ]),
+        ("Legacy API Tests", [
+            tester.test_get_services,
+            tester.test_get_cleaners,
+            tester.test_get_service_areas,
+            tester.test_create_booking,
+            tester.test_get_booking,
+            tester.test_create_checkout_session,
+            tester.test_invalid_booking
+        ])
     ]
     
-    for test in tests:
-        try:
-            test()
-        except Exception as e:
-            print(f"❌ Test failed with exception: {str(e)}")
+    # Run test categories
+    for category_name, tests in auth_tests:
+        print(f"\n{'='*20} {category_name} {'='*20}")
+        for test in tests:
+            try:
+                test()
+            except Exception as e:
+                print(f"❌ Test failed with exception: {str(e)}")
     
     # Print final results
-    print("\n" + "=" * 50)
+    print("\n" + "=" * 70)
     print(f"📊 Final Results: {tester.tests_passed}/{tester.tests_run} tests passed")
     
     if tester.tests_passed == tester.tests_run:
-        print("🎉 All tests passed! Backend API is working correctly.")
+        print("🎉 All tests passed! Authentication system is working correctly.")
         return 0
     else:
         print("⚠️  Some tests failed. Check the output above for details.")
