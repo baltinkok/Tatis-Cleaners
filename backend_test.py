@@ -1,6 +1,7 @@
 import requests
 import sys
 import json
+import base64
 from datetime import datetime, timedelta
 
 class TatisCleanersAPITester:
@@ -10,6 +11,17 @@ class TatisCleanersAPITester:
         self.tests_passed = 0
         self.booking_id = None
         self.cleaner_id = None
+        
+        # Authentication tokens
+        self.customer_token = None
+        self.cleaner_token = None
+        self.admin_token = None
+        
+        # User data
+        self.customer_user_id = None
+        self.cleaner_user_id = None
+        self.admin_user_id = None
+        self.application_id = None
 
     def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
         """Run a single API test"""
