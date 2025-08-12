@@ -122,6 +122,25 @@ def init_database():
             ratings_collection = db.ratings
             
             logger.info(f"Database '{DB_NAME}' initialized successfully")
+            
+            # Create indexes for production performance
+            if IS_PRODUCTION:
+                try:
+                    logger.info("Creating database indexes for production...")
+                    users_collection.create_index("email", unique=True)
+                    users_collection.create_index("role")
+                    bookings_collection.create_index("customer_email")
+                    bookings_collection.create_index("cleaner_id")
+                    bookings_collection.create_index("status")
+                    bookings_collection.create_index("created_at")
+                    cleaner_applications_collection.create_index("user_id")
+                    cleaner_applications_collection.create_index("status")
+                    ratings_collection.create_index("cleaner_id")
+                    ratings_collection.create_index("booking_id")
+                    logger.info("Database indexes created successfully")
+                except Exception as e:
+                    logger.warning(f"Index creation failed (may already exist): {e}")
+            
             return True
             
         except (ServerSelectionTimeoutError, ConnectionFailure) as e:
