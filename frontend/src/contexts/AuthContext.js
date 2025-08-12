@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem('token'));
 
-  const apiUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+  const apiUrl = process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_API_URL || 'http://localhost:8001';
 
   // Initialize auth state
   useEffect(() => {
