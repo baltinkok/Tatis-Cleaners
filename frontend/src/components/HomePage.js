@@ -298,7 +298,8 @@ function HomePage() {
 
       {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-emerald-50 to-blue-50 py-20">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200')] bg-cover bg-center opacity-10"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1200&h=800&fit=crop')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-600/10 to-blue-600/10"></div>
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <div className="mb-8">
             <div className="h-24 w-24 bg-yellow-400 rounded-full flex items-center justify-center mx-auto mb-6">
