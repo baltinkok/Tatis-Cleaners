@@ -572,11 +572,9 @@ function HomePage() {
         <div className="max-w-4xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-4 mb-6 md:mb-0">
-              <img
-                src="https://customer-assets.clickfunnels.com/1f3a8e9e-6fe0-44c8-9e4c-0a55a0cb5df4/tatis-cleaners-logo-17275651900.png"
-                alt="Tati's Cleaners"
-                className="h-10 w-10"
-              />
+              <div className="h-10 w-10 bg-yellow-400 rounded-full flex items-center justify-center">
+                <span className="text-yellow-900 font-bold">T</span>
+              </div>
               <div>
                 <h3 className="text-xl font-bold">Tati's Cleaners</h3>
                 <p className="text-slate-400">Professional cleaning services</p>
