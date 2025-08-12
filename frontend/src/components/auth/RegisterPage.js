@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 
 const RegisterPage = () => {
   const [searchParams] = useSearchParams();
