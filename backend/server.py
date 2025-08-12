@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException, Request, Depends
+from fastapi import FastAPI, HTTPException, Request, Depends, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError, ConnectionFailure
 from datetime import datetime, timedelta
@@ -9,6 +10,13 @@ from typing import List, Optional
 import logging
 from pydantic import BaseModel, Field
 import json
+
+# Authentication imports
+from auth_models import *
+from auth_handler import auth_handler
+from auth_middleware import get_current_user, require_customer, require_cleaner, require_admin, require_any_auth
+from background_check_service import background_check_service
+from file_upload_service import file_upload_service
 
 # Configure logging with more details for production
 logging.basicConfig(
