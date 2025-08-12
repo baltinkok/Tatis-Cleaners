@@ -229,13 +229,20 @@ SERVICE_AREAS = [
 
 # Initialize sample cleaners with error handling
 def init_sample_cleaners():
-    """Initialize sample cleaners with error handling"""
+    """Initialize sample cleaners data - only in development"""
     if not database_connected:
         logger.warning("Database not connected, skipping cleaner initialization")
         return False
     
     try:
-        if cleaners_collection.count_documents({}) == 0:
+        existing_cleaners = cleaners_collection.count_documents({})
+        if existing_cleaners > 0:
+            logger.info(f"Found {existing_cleaners} existing cleaners, skipping initialization")
+            return True
+        
+        # Only initialize sample data in development
+        if not IS_PRODUCTION:
+            logger.info("Initializing sample cleaners for development environment")
             sample_cleaners = [
                 {
                     "id": str(uuid.uuid4()),
@@ -275,8 +282,11 @@ def init_sample_cleaners():
                 }
             ]
             cleaners_collection.insert_many(sample_cleaners)
-            logger.info("Sample cleaners initialized successfully")
-            return True
+            logger.info(f"Initialized {len(sample_cleaners)} sample cleaners")
+        else:
+            logger.info("Production environment - skipping sample data initialization")
+        
+        return True
     except Exception as e:
         logger.error(f"Error initializing sample cleaners: {e}")
         return False
