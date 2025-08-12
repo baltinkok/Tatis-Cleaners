@@ -72,6 +72,7 @@ ratings_collection = None
 def init_database():
     """Initialize database connection with retry logic"""
     global client, db, cleaners_collection, bookings_collection, payment_transactions_collection
+    global users_collection, cleaner_applications_collection, ratings_collection
     
     max_retries = 3
     retry_count = 0
@@ -99,6 +100,9 @@ def init_database():
             cleaners_collection = db.cleaners
             bookings_collection = db.bookings
             payment_transactions_collection = db.payment_transactions
+            users_collection = db.users
+            cleaner_applications_collection = db.cleaner_applications
+            ratings_collection = db.ratings
             
             logger.info(f"Database '{DB_NAME}' initialized successfully")
             return True
