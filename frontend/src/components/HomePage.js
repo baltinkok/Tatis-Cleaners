@@ -236,7 +236,8 @@ function HomePage() {
       
       if (response.ok) {
         setBooking({ ...result, ...bookingData });
-        setCurrentStep(6); // Go to payment step
+        // Proceed directly to payment
+        handlePayment();
       } else {
         alert('Error creating booking: ' + result.detail);
       }
