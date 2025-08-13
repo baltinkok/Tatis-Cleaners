@@ -800,8 +800,8 @@ function HomePage() {
                 </label>
                 <Input
                   type="text"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
+                  value={customerInfo.name}
+                  onChange={(e) => setCustomerInfo(prev => ({...prev, name: e.target.value}))}
                   placeholder="Your full name"
                   className="w-full"
                 />
