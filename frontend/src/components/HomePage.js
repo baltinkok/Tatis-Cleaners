@@ -523,7 +523,7 @@ function HomePage() {
                   Apply as Cleaner
                 </a>
                 <p className="text-xs text-slate-500">
-                  Already registered? <a href="/login" className="text-blue-600 hover:text-blue-700">Sign In</a>
+                  Already registered? <Link to="/login" className="text-blue-600 hover:text-blue-700">Sign In</Link>
                 </p>
               </div>
             </div>
