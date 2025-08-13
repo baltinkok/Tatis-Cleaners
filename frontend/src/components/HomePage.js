@@ -542,7 +542,14 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Booking Section */}
+      {/* TEST: Simple booking section */}
+      <div className="bg-red-500 text-white p-8 text-center" id="book-now">
+        <h1>🔥 BOOKING SECTION TEST</h1>
+        <p>Current Step: {currentStep}</p>
+        <p>If you see this, the booking section is rendering!</p>
+      </div>
+
+      {/* Original Booking Section 
       <main className="max-w-4xl mx-auto px-6 py-16" id="book-now">
         {/* Debug info */}
         <div className="mb-4 p-2 bg-yellow-100 rounded text-sm">
