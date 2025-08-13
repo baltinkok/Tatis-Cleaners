@@ -516,28 +516,37 @@ function HomePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              {Object.entries(services).map(([key, service]) => (
-                <div
-                  key={key}
-                  onClick={() => setSelectedService(key)}
-                  className={`p-6 border-2 rounded-xl cursor-pointer transition-all ${
-                    selectedService === key
-                      ? 'border-emerald-500 bg-emerald-50'
-                      : 'border-slate-200 hover:border-slate-300'
-                  }`}
-                >
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Home className="w-8 h-8 text-emerald-600" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-slate-900 mb-2">{service.name}</h3>
-                    <p className="text-slate-600 text-sm mb-4">{service.description}</p>
-                    <div className="text-2xl font-bold text-emerald-600">
-                      ${service.base_price}/hour
+              {Object.entries(services).length > 0 ? (
+                Object.entries(services).map(([key, service]) => (
+                  <div
+                    key={key}
+                    onClick={() => setSelectedService(key)}
+                    className={`p-6 border-2 rounded-xl cursor-pointer transition-all ${
+                      selectedService === key
+                        ? 'border-emerald-500 bg-emerald-50'
+                        : 'border-slate-200 hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Home className="w-8 h-8 text-emerald-600" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-slate-900 mb-2">{service.name}</h3>
+                      <p className="text-slate-600 text-sm mb-4">{service.description}</p>
+                      <div className="text-2xl font-bold text-emerald-600">
+                        ${service.base_price}/hour
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="col-span-2 text-center py-8">
+                  <div className="text-slate-400 mb-4">
+                    <Loader className="w-8 h-8 animate-spin mx-auto" />
+                  </div>
+                  <p className="text-slate-600">Loading services...</p>
                 </div>
-              ))}
+              )}
             </div>
 
             {selectedService && (
