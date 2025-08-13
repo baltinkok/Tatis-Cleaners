@@ -5,10 +5,10 @@
   "outputDirectory": "build",
   "installCommand": "yarn install",
   "framework": "create-react-app",
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "env": {
