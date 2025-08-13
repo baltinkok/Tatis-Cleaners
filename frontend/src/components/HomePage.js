@@ -977,7 +977,7 @@ function HomePage() {
                   </>
                 ) : (
                   <>
-                    Proceed to Payment
+                    Book & Pay Now
                     <CreditCard className="w-5 h-5 ml-2" />
                   </>
                 )}
