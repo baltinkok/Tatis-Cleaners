@@ -1,0 +1,16 @@
+{
+  "name": "tatis-cleaners",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "cd frontend && yarn install --network-timeout 100000 && yarn build",
+    "start": "cd frontend && npx serve -s build -l $PORT -H 0.0.0.0"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
