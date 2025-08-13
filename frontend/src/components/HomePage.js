@@ -911,10 +911,10 @@ function HomePage() {
 
                 <div>
                   <h3 className="font-semibold text-slate-900 mb-2">Contact Information</h3>
-                  <p className="text-slate-600">Name: {customerName}</p>
-                  <p className="text-slate-600">Email: {customerEmail}</p>
-                  <p className="text-slate-600">Phone: {customerPhone}</p>
-                  <p className="text-slate-600">Address: {address}</p>
+                  <p className="text-slate-600">Name: {customerInfo.name}</p>
+                  <p className="text-slate-600">Email: {customerInfo.email}</p>
+                  <p className="text-slate-600">Phone: {customerInfo.phone}</p>
+                  <p className="text-slate-600">Address: {customerInfo.address}</p>
                   <p className="text-slate-600">Area: {selectedArea}</p>
                 </div>
               </div>
