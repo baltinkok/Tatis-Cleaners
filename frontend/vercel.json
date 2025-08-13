@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "name": "tatis-cleaners-frontend",
+  "buildCommand": "yarn build",
+  "outputDirectory": "build",
+  "installCommand": "yarn install",
+  "framework": "create-react-app",
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "REACT_APP_BACKEND_URL": "https://cleanpro-hire.emergent.host"
+  }
+}
