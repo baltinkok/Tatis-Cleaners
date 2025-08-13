@@ -3,8 +3,9 @@ services:
   - type: web
     name: tatis-cleaners-frontend
     env: node
-    buildCommand: cd frontend && yarn install && yarn build
-    startCommand: cd frontend && serve -s build -p $PORT
+    buildCommand: cd frontend && yarn install --network-timeout 100000 && yarn build
+    startCommand: cd frontend && npx serve -s build -l $PORT -H 0.0.0.0
+    healthCheckPath: /
     envVars:
       - key: NODE_ENV
         value: production
@@ -19,12 +20,8 @@ services:
     name: tatis-cleaners-backend
     env: python
     buildCommand: cd backend && pip install -r requirements.txt
-    startCommand: cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT
+    startCommand: cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT --workers 1
+    healthCheckPath: /api/health
     envVars:
       - key: MONGO_URL
         value: YOUR_MONGODB_CONNECTION_STRING_HERE
-
-  # Database (if using Render's PostgreSQL instead of MongoDB)
-  # - type: pserv
-  #   name: tatis-cleaners-db
-  #   plan: starter
