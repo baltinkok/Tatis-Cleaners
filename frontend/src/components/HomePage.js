@@ -832,8 +832,8 @@ function HomePage() {
                 </label>
                 <input
                   type="tel"
-                  value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  value={customerInfo.phone}
+                  onChange={(e) => setCustomerInfo(prev => ({...prev, phone: e.target.value}))}
                   placeholder="(555) 123-4567"
                   className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                 />
