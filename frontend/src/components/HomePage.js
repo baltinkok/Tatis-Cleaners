@@ -141,20 +141,32 @@ function HomePage() {
   const loadCleaners = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/cleaners`);
+      if (!response.ok) {
+        console.warn('Cleaners API returned error:', response.status);
+        setCleaners([]); // Set empty array as fallback
+        return;
+      }
       const data = await response.json();
-      setCleaners(data.cleaners);
+      setCleaners(data.cleaners || []); // Ensure fallback to empty array
     } catch (error) {
       console.error('Error loading cleaners:', error);
+      setCleaners([]); // Set empty array as fallback
     }
   };
 
   const loadServiceAreas = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/api/service-areas`);
+      if (!response.ok) {
+        console.warn('Service areas API returned error:', response.status);
+        setServiceAreas([]); // Set empty array as fallback
+        return;
+      }
       const data = await response.json();
-      setServiceAreas(data.areas);
+      setServiceAreas(data.areas || []); // Ensure fallback to empty array
     } catch (error) {
       console.error('Error loading service areas:', error);
+      setServiceAreas([]); // Set empty array as fallback
     }
   };
 
