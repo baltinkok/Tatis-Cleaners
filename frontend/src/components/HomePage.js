@@ -83,7 +83,7 @@ function HomePage() {
 
   // Handle reorder data and preferred cleaner after cleaners are loaded
   useEffect(() => {
-    if (cleaners.length > 0) {
+    if (cleaners && cleaners.length > 0) {
       // Load reorder data if exists
       const reorderData = sessionStorage.getItem('reorderData');
       if (reorderData) {
