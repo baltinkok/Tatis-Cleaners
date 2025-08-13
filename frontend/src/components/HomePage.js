@@ -235,9 +235,35 @@ function HomePage() {
       const result = await response.json();
       
       if (response.ok) {
-        setBooking({ ...result, ...bookingData });
-        // Proceed directly to payment
-        handlePayment();
+        const bookingResult = { ...result, ...bookingData };
+        setBooking(bookingResult);
+        
+        // Proceed directly to payment using the booking result
+        try {
+          const paymentData = {
+            booking_id: result.booking_id,
+            origin_url: window.location.origin
+          };
+
+          const paymentResponse = await fetch(`${BACKEND_URL}/api/checkout/session`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(paymentData)
+          });
+
+          const paymentResult = await paymentResponse.json();
+          
+          if (paymentResponse.ok) {
+            window.location.href = paymentResult.url;
+          } else {
+            alert('Error creating payment session: ' + paymentResult.detail);
+          }
+        } catch (paymentError) {
+          console.error('Error creating payment session:', paymentError);
+          alert('Booking created but error with payment. Please contact support.');
+        }
       } else {
         alert('Error creating booking: ' + result.detail);
       }
