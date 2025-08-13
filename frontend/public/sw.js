@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tatis-cleaners-v' + Date.now();
+const CACHE_NAME = 'tatis-cleaners-v1.0.1';
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',
