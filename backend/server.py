@@ -315,24 +315,62 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Detailed health check endpoint"""
-    health_status = {
-        "status": "healthy",
-        "timestamp": datetime.now().isoformat(),
-        "database": "connected" if database_connected else "disconnected",
-        "stripe": "available" if STRIPE_AVAILABLE and STRIPE_API_KEY else "unavailable"
-    }
-    
-    # Test database connection
-    if database_connected:
-        try:
-            client.admin.command('ping')
-            health_status["database_test"] = "success"
-        except Exception as e:
-            health_status["database_test"] = f"failed: {str(e)}"
-            health_status["status"] = "degraded"
-    
-    return health_status
+    """Enhanced health check endpoint for deployment monitoring"""
+    try:
+        health_status = {
+            "status": "healthy",
+            "timestamp": datetime.now().isoformat(),
+            "environment": ENVIRONMENT,
+            "database": "disconnected",
+            "database_test": "failed",
+            "stripe": "unavailable",
+            "version": "1.0.0"
+        }
+        
+        # Database connectivity check
+        if database_connected and client:
+            try:
+                # Test database connection
+                client.admin.command('ping')
+                health_status["database"] = "connected"
+                
+                # Test database operations
+                test_result = db.command("buildInfo")
+                if test_result:
+                    health_status["database_test"] = "success"
+                    health_status["mongodb_version"] = test_result.get("version", "unknown")
+                    
+            except Exception as db_error:
+                logger.error(f"Database health check failed: {db_error}")
+                health_status["database"] = "error"
+                health_status["database_error"] = str(db_error)
+        
+        # Stripe availability check
+        if STRIPE_AVAILABLE and STRIPE_API_KEY:
+            health_status["stripe"] = "available"
+        elif STRIPE_API_KEY:
+            health_status["stripe"] = "configured"
+        
+        # Collections status
+        if database_connected:
+            try:
+                health_status["collections"] = {
+                    "cleaners": cleaners_collection.count_documents({}),
+                    "bookings": bookings_collection.count_documents({}),
+                    "users": users_collection.count_documents({}) if users_collection else 0
+                }
+            except Exception:
+                pass
+        
+        return health_status
+        
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return {
+            "status": "unhealthy",
+            "timestamp": datetime.now().isoformat(),
+            "error": str(e)
+        }
 
 # API Routes with error handling
 @app.get("/api/cleaners")
