@@ -871,7 +871,7 @@ function HomePage() {
                 <ChevronLeft className="w-5 h-5 mr-2" />
                 Back to Schedule
               </Button>
-              {customerName && customerEmail && customerPhone && address && (
+              {customerInfo.name && customerInfo.email && customerInfo.phone && customerInfo.address && (
                 <Button 
                   onClick={handleNext}
                   size="lg" 
