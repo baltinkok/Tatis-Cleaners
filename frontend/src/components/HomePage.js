@@ -542,13 +542,72 @@ function HomePage() {
         </div>
       </section>
 
-      {/* TEST: Simple booking section */}
-      <div className="bg-red-500 text-white p-8 text-center m-8" id="book-now">
-        <h1 className="text-3xl font-bold mb-4">🔥 BOOKING SECTION TEST</h1>
-        <p className="text-lg">Current Step: {currentStep}</p>
-        <p className="text-lg">If you see this, the booking section is rendering!</p>
-        <p className="text-sm mt-4">Services: {Object.keys(services).length}, Cleaners: {cleaners.length}</p>
-      </div>
+      {/* Booking Section */}
+      <main className="max-w-4xl mx-auto px-6 py-16" id="book-now">
+        {currentStep === 1 && (
+          <Card className="p-8">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center space-x-2 mb-4">
+                <Briefcase className="w-8 h-8 text-emerald-600" />
+                <h2 className="text-3xl font-bold text-slate-900">Choose Your Service</h2>
+              </div>
+              <p className="text-slate-600 max-w-2xl mx-auto">
+                Select the type of cleaning service you need. Our experienced cleaners will take care of the rest.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {Object.entries(services).length > 0 ? (
+                Object.entries(services).map(([key, service]) => (
+                  <div
+                    key={key}
+                    onClick={() => setSelectedService(key)}
+                    className={`p-6 border-2 rounded-xl cursor-pointer transition-all ${
+                      selectedService === key
+                        ? 'border-emerald-500 bg-emerald-50'
+                        : 'border-slate-200 hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Home className="w-8 h-8 text-emerald-600" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-slate-900 mb-2">{service.name}</h3>
+                      <p className="text-slate-600 text-sm mb-4">{service.description}</p>
+                      <div className="text-2xl font-bold text-emerald-600">
+                        ${service.base_price}/hour
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-2 text-center py-8">
+                  <div className="text-slate-400 mb-4">
+                    <Loader className="w-8 h-8 animate-spin mx-auto" />
+                  </div>
+                  <p className="text-slate-600 mb-2">Loading services...</p>
+                  <p className="text-xs text-slate-400">
+                    If this persists, check browser console for errors
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {selectedService && (
+              <div className="text-center">
+                <Button 
+                  onClick={handleNext}
+                  size="lg" 
+                  className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8"
+                >
+                  Continue to Cleaner Selection
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+              </div>
+            )}
+          </Card>
+        )}
+      </main>
 
       {/* FAQ Section */}
       <section className="bg-slate-50 py-16">
