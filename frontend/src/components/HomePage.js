@@ -31,18 +31,20 @@ const getBackendUrl = () => {
     return process.env.REACT_APP_BACKEND_URL;
   }
   
-  // For development environment - use localhost:8001
-  if (process.env.NODE_ENV === 'development') {
-    return 'http://localhost:8001';
-  }
-  
-  // For production deployment - the Kubernetes ingress will route /api calls to backend
-  // So we can use the same origin since /api paths are routed to port 8001
+  // Check if we're in local development (localhost)
   if (typeof window !== 'undefined') {
-    return window.location.origin; // This relies on Kubernetes ingress routing
+    const hostname = window.location.hostname;
+    
+    // Local development - use backend port
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:8001';
+    }
+    
+    // Production deployment - use same origin (Kubernetes ingress handles routing)
+    return window.location.origin;
   }
   
-  // Fallback for development
+  // Server-side fallback
   return 'http://localhost:8001';
 };
 
