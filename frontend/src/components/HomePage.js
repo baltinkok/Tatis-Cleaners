@@ -341,12 +341,12 @@ function HomePage() {
                     </div>
                   </div>
                   <div className="relative group">
-                    <a
-                      href="/register"
+                    <Link
+                      to="/register"
                       className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 font-medium"
                     >
                       Sign Up
-                    </a>
+                    </Link>
                     <div className="absolute top-full right-0 mt-2 w-72 bg-white rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                       <div className="p-4">
                         <div className="mb-3 pb-3 border-b">
