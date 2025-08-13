@@ -55,26 +55,31 @@ function HomePage() {
     loadCleaners();
     loadServiceAreas();
     checkPaymentReturn();
-    
-    // Load reorder data if exists
-    const reorderData = sessionStorage.getItem('reorderData');
-    if (reorderData) {
-      const data = JSON.parse(reorderData);
-      setSelectedService(data.service_type);
-      setSelectedCleaner(cleaners.find(c => c.id === data.cleaner_id));
-      setSelectedHours(data.hours);
-      setSelectedArea(data.location);
-      setCurrentStep(2); // Skip to cleaner selection
-      sessionStorage.removeItem('reorderData');
+  }, []); // Remove cleaners dependency to prevent infinite loop
+
+  // Handle reorder data and preferred cleaner after cleaners are loaded
+  useEffect(() => {
+    if (cleaners.length > 0) {
+      // Load reorder data if exists
+      const reorderData = sessionStorage.getItem('reorderData');
+      if (reorderData) {
+        const data = JSON.parse(reorderData);
+        setSelectedService(data.service_type);
+        setSelectedCleaner(cleaners.find(c => c.id === data.cleaner_id));
+        setSelectedHours(data.hours);
+        setSelectedArea(data.location);
+        setCurrentStep(2); // Skip to cleaner selection
+        sessionStorage.removeItem('reorderData');
+      }
+      
+      // Check for preferred cleaner
+      const preferredCleaner = sessionStorage.getItem('preferredCleaner');
+      if (preferredCleaner) {
+        setSelectedCleaner(cleaners.find(c => c.id === preferredCleaner));
+        sessionStorage.removeItem('preferredCleaner');
+      }
     }
-    
-    // Check for preferred cleaner
-    const preferredCleaner = sessionStorage.getItem('preferredCleaner');
-    if (preferredCleaner) {
-      setSelectedCleaner(cleaners.find(c => c.id === preferredCleaner));
-      sessionStorage.removeItem('preferredCleaner');
-    }
-  }, [cleaners]);
+  }, [cleaners]); // Only depend on cleaners
 
   // Auto-fill customer info if authenticated
   useEffect(() => {
