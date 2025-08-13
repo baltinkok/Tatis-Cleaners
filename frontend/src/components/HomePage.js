@@ -938,7 +938,7 @@ function HomePage() {
                 Back to Details
               </Button>
               <Button 
-                onClick={handleBooking}
+                onClick={handlePayment}
                 disabled={isLoading}
                 size="lg" 
                 className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8"
@@ -950,7 +950,7 @@ function HomePage() {
                   </>
                 ) : (
                   <>
-                    Book & Pay Now
+                    Proceed to Payment
                     <CreditCard className="w-5 h-5 ml-2" />
                   </>
                 )}
