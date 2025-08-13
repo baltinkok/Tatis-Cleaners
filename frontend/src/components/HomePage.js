@@ -806,8 +806,8 @@ function HomePage() {
                 </label>
                 <input
                   type="text"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
+                  value={customerInfo.name}
+                  onChange={(e) => setCustomerInfo(prev => ({...prev, name: e.target.value}))}
                   placeholder="Your full name"
                   className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                 />
