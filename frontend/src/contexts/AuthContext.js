@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
 
   // Memoize apiUrl to prevent infinite re-renders
   const apiUrl = useMemo(() => {
-    return process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_API_URL || 'http://localhost:8001';
+    return ENV_CONFIG.backendUrl;
   }, []);
 
   // Initialize auth state
