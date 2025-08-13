@@ -677,6 +677,287 @@ function HomePage() {
             </div>
           </Card>
         )}
+
+        {/* Step 3: Date & Time Selection */}
+        {currentStep === 3 && (
+          <Card className="p-8">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center space-x-2 mb-4">
+                <Calendar className="w-8 h-8 text-emerald-600" />
+                <h2 className="text-3xl font-bold text-slate-900">Schedule Your Cleaning</h2>
+              </div>
+              <p className="text-slate-600 max-w-2xl mx-auto">
+                Choose your preferred date, time, and duration for the cleaning service.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              {/* Date Selection */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Select Date
+                </label>
+                <input
+                  type="date"
+                  value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
+                  onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+
+              {/* Time Selection */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Select Time
+                </label>
+                <select
+                  value={selectedTime}
+                  onChange={(e) => setSelectedTime(e.target.value)}
+                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value="">Choose time...</option>
+                  <option value="08:00">8:00 AM</option>
+                  <option value="09:00">9:00 AM</option>
+                  <option value="10:00">10:00 AM</option>
+                  <option value="11:00">11:00 AM</option>
+                  <option value="12:00">12:00 PM</option>
+                  <option value="13:00">1:00 PM</option>
+                  <option value="14:00">2:00 PM</option>
+                  <option value="15:00">3:00 PM</option>
+                  <option value="16:00">4:00 PM</option>
+                </select>
+              </div>
+
+              {/* Hours Selection */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Duration (Hours)
+                </label>
+                <select
+                  value={selectedHours}
+                  onChange={(e) => setSelectedHours(parseInt(e.target.value))}
+                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value={1}>1 hour</option>
+                  <option value={2}>2 hours</option>
+                  <option value={3}>3 hours</option>
+                  <option value={4}>4 hours</option>
+                  <option value={5}>5 hours</option>
+                  <option value={6}>6 hours</option>
+                  <option value={8}>8 hours</option>
+                </select>
+              </div>
+
+              {/* Service Area */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Service Area
+                </label>
+                <select
+                  value={selectedArea}
+                  onChange={(e) => setSelectedArea(e.target.value)}
+                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value="">Choose area...</option>
+                  {serviceAreas.map((area) => (
+                    <option key={area} value={area}>{area}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-between">
+              <Button onClick={handleBack} variant="outline" size="lg">
+                <ChevronLeft className="w-5 h-5 mr-2" />
+                Back to Cleaners
+              </Button>
+              {selectedDate && selectedTime && selectedArea && (
+                <Button 
+                  onClick={handleNext}
+                  size="lg" 
+                  className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8"
+                >
+                  Continue to Details
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+              )}
+            </div>
+          </Card>
+        )}
+
+        {/* Step 4: Customer Details */}
+        {currentStep === 4 && (
+          <Card className="p-8">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center space-x-2 mb-4">
+                <MapPin className="w-8 h-8 text-emerald-600" />
+                <h2 className="text-3xl font-bold text-slate-900">Your Details</h2>
+              </div>
+              <p className="text-slate-600 max-w-2xl mx-auto">
+                Please provide your contact information and service address.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="Your full name"
+                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  value={customerEmail}
+                  onChange={(e) => setCustomerEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  placeholder="(555) 123-4567"
+                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Service Address
+                </label>
+                <input
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="123 Main St, City, State 12345"
+                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Special Instructions (Optional)
+                </label>
+                <textarea
+                  value={specialInstructions}
+                  onChange={(e) => setSpecialInstructions(e.target.value)}
+                  placeholder="Any special requests or instructions..."
+                  rows={3}
+                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-between">
+              <Button onClick={handleBack} variant="outline" size="lg">
+                <ChevronLeft className="w-5 h-5 mr-2" />
+                Back to Schedule
+              </Button>
+              {customerName && customerEmail && customerPhone && address && (
+                <Button 
+                  onClick={handleNext}
+                  size="lg" 
+                  className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8"
+                >
+                  Review Booking
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+              )}
+            </div>
+          </Card>
+        )}
+
+        {/* Step 5: Booking Summary */}
+        {currentStep === 5 && (
+          <Card className="p-8">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center space-x-2 mb-4">
+                <CheckCircle className="w-8 h-8 text-emerald-600" />
+                <h2 className="text-3xl font-bold text-slate-900">Review Your Booking</h2>
+              </div>
+              <p className="text-slate-600 max-w-2xl mx-auto">
+                Please review your booking details before proceeding to payment.
+              </p>
+            </div>
+
+            <div className="bg-slate-50 rounded-lg p-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="font-semibold text-slate-900 mb-2">Service Details</h3>
+                  <p className="text-slate-600">Service: {services[selectedService]?.name}</p>
+                  <p className="text-slate-600">Cleaner: {selectedCleaner?.name}</p>
+                  <p className="text-slate-600">Date: {selectedDate?.toLocaleDateString()}</p>
+                  <p className="text-slate-600">Time: {selectedTime}</p>
+                  <p className="text-slate-600">Duration: {selectedHours} hour{selectedHours > 1 ? 's' : ''}</p>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-slate-900 mb-2">Contact Information</h3>
+                  <p className="text-slate-600">Name: {customerName}</p>
+                  <p className="text-slate-600">Email: {customerEmail}</p>
+                  <p className="text-slate-600">Phone: {customerPhone}</p>
+                  <p className="text-slate-600">Address: {address}</p>
+                  <p className="text-slate-600">Area: {selectedArea}</p>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-slate-200">
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-semibold text-slate-900">Total Cost:</span>
+                  <span className="text-2xl font-bold text-emerald-600">
+                    ${calculateTotal()}
+                  </span>
+                </div>
+                <p className="text-sm text-slate-500 mt-1">
+                  ${services[selectedService]?.base_price}/hour × {selectedHours} hour{selectedHours > 1 ? 's' : ''}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-between">
+              <Button onClick={handleBack} variant="outline" size="lg">
+                <ChevronLeft className="w-5 h-5 mr-2" />
+                Back to Details
+              </Button>
+              <Button 
+                onClick={handleBooking}
+                disabled={isLoading}
+                size="lg" 
+                className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader className="w-5 h-5 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    Book & Pay Now
+                    <CreditCard className="w-5 h-5 ml-2" />
+                  </>
+                )}
+              </Button>
+            </div>
+          </Card>
+        )}
       </main>
 
       {/* FAQ Section */}
