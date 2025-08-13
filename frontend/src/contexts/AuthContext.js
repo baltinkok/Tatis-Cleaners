@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     initAuth();
-  }, [apiUrl]);
+  }, []); // Remove apiUrl dependency to prevent infinite loop
 
   const register = async (userData) => {
     try {
