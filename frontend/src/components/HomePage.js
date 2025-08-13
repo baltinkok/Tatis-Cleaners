@@ -607,6 +607,77 @@ function HomePage() {
             )}
           </Card>
         )}
+
+        {/* Step 2: Cleaner Selection */}
+        {currentStep === 2 && (
+          <Card className="p-8">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center space-x-2 mb-4">
+                <Star className="w-8 h-8 text-emerald-600" />
+                <h2 className="text-3xl font-bold text-slate-900">Choose Your Cleaner</h2>
+              </div>
+              <p className="text-slate-600 max-w-2xl mx-auto">
+                Select from our experienced cleaners. All are background-checked and highly rated.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {cleaners && cleaners.length > 0 ? (
+                cleaners.map((cleaner) => (
+                  <div
+                    key={cleaner.id}
+                    onClick={() => setSelectedCleaner(cleaner)}
+                    className={`p-6 border-2 rounded-xl cursor-pointer transition-all ${
+                      selectedCleaner?.id === cleaner.id
+                        ? 'border-emerald-500 bg-emerald-50'
+                        : 'border-slate-200 hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Star className="w-10 h-10 text-emerald-600" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-slate-900 mb-2">{cleaner.name}</h3>
+                      <div className="flex items-center justify-center mb-2">
+                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                        <span className="text-slate-600 ml-1">{cleaner.rating}</span>
+                        <span className="text-slate-400 ml-2">• {cleaner.experience_years} years exp.</span>
+                      </div>
+                      <div className="text-sm text-slate-600">
+                        {cleaner.specialties && cleaner.specialties.slice(0, 2).join(', ')}
+                        {cleaner.specialties && cleaner.specialties.length > 2 && `... +${cleaner.specialties.length - 2} more`}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-2 text-center py-8">
+                  <div className="text-slate-400 mb-4">
+                    <Loader className="w-8 h-8 animate-spin mx-auto" />
+                  </div>
+                  <p className="text-slate-600">Loading cleaners...</p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-between">
+              <Button onClick={handleBack} variant="outline" size="lg">
+                <ChevronLeft className="w-5 h-5 mr-2" />
+                Back to Services
+              </Button>
+              {selectedCleaner && (
+                <Button 
+                  onClick={handleNext}
+                  size="lg" 
+                  className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8"
+                >
+                  Continue to Booking Details
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Button>
+              )}
+            </div>
+          </Card>
+        )}
       </main>
 
       {/* FAQ Section */}
