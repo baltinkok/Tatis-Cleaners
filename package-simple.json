@@ -1,0 +1,17 @@
+{
+  "name": "tatis-cleaners",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tati's Cleaners - Professional Cleaning Services Platform",
+  "license": "MIT",
+  "scripts": {
+    "install-frontend": "cd frontend && yarn install",
+    "build-frontend": "cd frontend && yarn build",
+    "start-frontend": "cd frontend && serve -s build -p $PORT",
+    "build": "yarn install-frontend && yarn build-frontend",
+    "start": "yarn start-frontend"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}
