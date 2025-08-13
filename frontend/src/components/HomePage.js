@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   Calendar, 
@@ -23,32 +23,10 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Input } from './ui/input';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
+import { ENV_CONFIG } from '../config/environment';
 
-// Dynamic backend URL detection for different environments
-const getBackendUrl = () => {
-  // If explicitly set in environment, use that
-  if (process.env.REACT_APP_BACKEND_URL) {
-    return process.env.REACT_APP_BACKEND_URL;
-  }
-  
-  // Check if we're in local development (localhost)
-  if (typeof window !== 'undefined') {
-    const hostname = window.location.hostname;
-    
-    // Local development - use backend port
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return 'http://localhost:8001';
-    }
-    
-    // Production deployment - use same origin (Kubernetes ingress handles routing)
-    return window.location.origin;
-  }
-  
-  // Server-side fallback
-  return 'http://localhost:8001';
-};
-
-const BACKEND_URL = getBackendUrl();
+// Memoize the backend URL to prevent re-renders
+const BACKEND_URL = ENV_CONFIG.backendUrl;
 
 function HomePage() {
   const { isAuthenticated, user } = useAuth();
