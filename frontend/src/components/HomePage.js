@@ -951,6 +951,7 @@ function HomePage() {
               </Button>
             </div>
           </Card>
+        )}
         
       </main>
 
