@@ -5,18 +5,17 @@
   "description": "Tati's Cleaners - Professional Cleaning Services Platform",
   "license": "MIT",
   "scripts": {
-    "install-frontend": "cd frontend && yarn install",
-    "install-backend": "cd backend && pip install -r requirements.txt",
+    "install-frontend": "cd frontend && yarn install --network-timeout 100000",
     "build-frontend": "cd frontend && yarn build",
-    "start-frontend": "cd frontend && serve -s build -p $PORT",
-    "start-backend": "cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT",
+    "start-frontend": "cd frontend && serve -s build -p $PORT -H 0.0.0.0",
     "build": "yarn install-frontend && yarn build-frontend",
     "start": "yarn start-frontend"
   },
-  "workspaces": [
-    "frontend"
-  ],
-  "devDependencies": {
+  "dependencies": {
     "serve": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "yarn": ">=1.22.0"
   }
 }
