@@ -537,6 +537,11 @@ function HomePage() {
 
       {/* Booking Section */}
       <main className="max-w-4xl mx-auto px-6 py-16" id="book-now">
+        {/* Debug info */}
+        <div className="mb-4 p-2 bg-yellow-100 rounded text-sm">
+          <strong>Debug:</strong> Current Step: {currentStep}, Services: {Object.keys(services).length}, Cleaners: {cleaners.length}
+        </div>
+        
         {currentStep === 1 && (
           <Card className="p-8">
             <div className="text-center mb-8">
