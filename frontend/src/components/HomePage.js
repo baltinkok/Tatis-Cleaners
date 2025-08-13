@@ -549,8 +549,8 @@ function HomePage() {
           <strong>Debug:</strong> Current Step: {currentStep}, Services: {Object.keys(services).length}, Cleaners: {cleaners.length}
         </div>
         
-        {currentStep === 1 && (
-          <Card className="p-8">
+        {/* Always render step 1 for testing */}
+        <Card className="p-8">
             <div className="text-center mb-8">
               <div className="flex items-center justify-center space-x-2 mb-4">
                 <Briefcase className="w-8 h-8 text-emerald-600" />
