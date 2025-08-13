@@ -845,8 +845,8 @@ function HomePage() {
                 </label>
                 <input
                   type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  value={customerInfo.address}
+                  onChange={(e) => setCustomerInfo(prev => ({...prev, address: e.target.value}))}
                   placeholder="123 Main St, City, State 12345"
                   className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                 />
