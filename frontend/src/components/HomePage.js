@@ -196,7 +196,11 @@ function HomePage() {
   ];
 
   const handleNext = () => {
-    setCurrentStep(prev => prev + 1);
+    console.log('🔄 handleNext called, current step:', currentStep);
+    setCurrentStep(prev => {
+      console.log('📈 Moving from step', prev, 'to step', prev + 1);
+      return prev + 1;
+    });
   };
 
   const handleBack = () => {
