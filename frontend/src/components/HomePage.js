@@ -24,7 +24,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Input } from './ui/input';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_API_URL || 'http://localhost:8001';
+// Dynamic backend URL detection for different environments
+const getBackendUrl = () => {
+  // If explicitly set in environment, use that
+  if (process.env.REACT_APP_BACKEND_URL) {
+    return process.env.REACT_APP_BACKEND_URL;
+  }
+  
+  // For development environment
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:8001';
+  }
+  
+  // For production deployment - use current domain with api path
+  if (typeof window !== 'undefined') {
+    const currentOrigin = window.location.origin;
+    return currentOrigin; // This will work with Kubernetes ingress routing
+  }
+  
+  // Fallback
+  return 'http://localhost:8001';
+};
+
+const BACKEND_URL = getBackendUrl();
 
 function HomePage() {
   const { isAuthenticated, user } = useAuth();
