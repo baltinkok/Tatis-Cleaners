@@ -95,11 +95,22 @@ function HomePage() {
 
   const loadServices = async () => {
     try {
+      console.log('🔄 Loading services from:', `${BACKEND_URL}/api/services`);
       const response = await fetch(`${BACKEND_URL}/api/services`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
       const data = await response.json();
-      setServices(data.services);
+      console.log('✅ Services loaded successfully:', Object.keys(data.services || {}));
+      setServices(data.services || {});
     } catch (error) {
-      console.error('Error loading services:', error);
+      console.error('❌ Error loading services:', error);
+      console.log('🔍 Backend URL being used:', BACKEND_URL);
+      
+      // Set empty services to show error state
+      setServices({});
     }
   };
 
