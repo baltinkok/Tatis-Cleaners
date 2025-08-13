@@ -95,10 +95,8 @@ function HomePage() {
 
   const loadServices = async () => {
     try {
-      console.log('Loading services from:', `${BACKEND_URL}/api/services`);
       const response = await fetch(`${BACKEND_URL}/api/services`);
       const data = await response.json();
-      console.log('Services loaded:', data.services);
       setServices(data.services);
     } catch (error) {
       console.error('Error loading services:', error);
