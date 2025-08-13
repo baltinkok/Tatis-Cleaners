@@ -469,12 +469,12 @@ function HomePage() {
               </div>
               
               <div className="space-y-3">
-                <a
-                  href="/register?role=customer"
+                <Link
+                  to="/register?role=customer"
                   className="w-full bg-emerald-600 text-white py-3 px-6 rounded-lg hover:bg-emerald-700 transition-colors inline-block"
                 >
                   Sign Up as Customer
-                </a>
+                </Link>
                 <p className="text-xs text-slate-500">
                   Already have an account? <Link to="/login" className="text-emerald-600 hover:text-emerald-700">Sign In</Link>
                 </p>
