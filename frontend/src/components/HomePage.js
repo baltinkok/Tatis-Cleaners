@@ -543,10 +543,11 @@ function HomePage() {
       </section>
 
       {/* TEST: Simple booking section */}
-      <div className="bg-red-500 text-white p-8 text-center" id="book-now">
-        <h1>🔥 BOOKING SECTION TEST</h1>
-        <p>Current Step: {currentStep}</p>
-        <p>If you see this, the booking section is rendering!</p>
+      <div className="bg-red-500 text-white p-8 text-center m-8" id="book-now">
+        <h1 className="text-3xl font-bold mb-4">🔥 BOOKING SECTION TEST</h1>
+        <p className="text-lg">Current Step: {currentStep}</p>
+        <p className="text-lg">If you see this, the booking section is rendering!</p>
+        <p className="text-sm mt-4">Services: {Object.keys(services).length}, Cleaners: {cleaners.length}</p>
       </div>
 
       {/* FAQ Section */}
