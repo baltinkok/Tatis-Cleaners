@@ -10,13 +10,26 @@
       }
     }
   ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "frontend/build/index.html"
+    }
+  ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "https://cleanpro-hire.emergent.host/api/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "frontend/$1"
+      "dest": "frontend/build/index.html"
     }
   ],
   "buildCommand": "cd frontend && yarn build",
   "outputDirectory": "frontend/build",
-  "installCommand": "cd frontend && yarn install"
+  "installCommand": "cd frontend && yarn install",
+  "env": {
+    "REACT_APP_BACKEND_URL": "https://cleanpro-hire.emergent.host"
+  }
 }
