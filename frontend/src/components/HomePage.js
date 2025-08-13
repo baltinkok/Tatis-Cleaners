@@ -476,7 +476,7 @@ function HomePage() {
                   Sign Up as Customer
                 </a>
                 <p className="text-xs text-slate-500">
-                  Already have an account? <a href="/login" className="text-emerald-600 hover:text-emerald-700">Sign In</a>
+                  Already have an account? <Link to="/login" className="text-emerald-600 hover:text-emerald-700">Sign In</Link>
                 </p>
               </div>
             </div>
