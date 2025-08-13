@@ -408,8 +408,15 @@ function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               onClick={() => {
+                console.log('🔘 Book Now clicked, currentStep:', currentStep);
                 const bookingSection = document.getElementById('book-now');
-                bookingSection?.scrollIntoView({ behavior: 'smooth' });
+                console.log('📍 Booking section element:', bookingSection);
+                if (bookingSection) {
+                  bookingSection.scrollIntoView({ behavior: 'smooth' });
+                  console.log('📜 Scrolling to booking section');
+                } else {
+                  console.error('❌ Booking section not found');
+                }
               }}
               size="lg" 
               className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8 py-4"
