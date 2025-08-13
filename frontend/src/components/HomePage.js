@@ -315,12 +315,12 @@ function HomePage() {
               ) : (
                 <div className="flex items-center space-x-4">
                   <div className="relative group">
-                    <a
-                      href="/login"
+                    <Link
+                      to="/login"
                       className="text-slate-600 hover:text-slate-900 font-medium"
                     >
                       Sign In
-                    </a>
+                    </Link>
                     <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                       <div className="p-4">
                         <div className="mb-3">
