@@ -82,35 +82,45 @@ cleaner_applications_collection = None
 ratings_collection = None
 
 def init_database():
-    """Initialize database connection with retry logic"""
+    """Initialize database connection with retry logic and Atlas optimization"""
     global client, db, cleaners_collection, bookings_collection, payment_transactions_collection
     global users_collection, cleaner_applications_collection, ratings_collection
     
-    max_retries = 5
+    max_retries = 5 if not IS_PRODUCTION else 10  # More retries in production
     retry_count = 0
     
     while retry_count < max_retries:
         try:
             logger.info(f"Attempting to connect to MongoDB (attempt {retry_count + 1}/{max_retries})")
-            logger.info(f"MongoDB URL: {MONGO_URL[:30]}...")
             
-            # Create client with Atlas-optimized settings
-            client = MongoClient(
-                MONGO_URL, 
-                serverSelectionTimeoutMS=30000,  # 30 second timeout for Atlas
-                connectTimeoutMS=30000,
-                socketTimeoutMS=30000,
-                maxPoolSize=50,
-                minPoolSize=5,
-                retryWrites=True,
-                retryReads=True,
-                w='majority',
-                readPreference='primary'
-            )
+            # Atlas-optimized connection settings
+            client_options = {
+                'serverSelectionTimeoutMS': 30000,  # 30 second timeout for Atlas
+                'connectTimeoutMS': 30000,
+                'socketTimeoutMS': 30000,
+                'maxPoolSize': 50,
+                'minPoolSize': 5,
+                'retryWrites': True,
+                'retryReads': True,
+                'w': 'majority',
+                'readPreference': 'primary'
+            }
             
-            # Test the connection
+            # Additional Atlas-specific settings for production
+            if IS_PRODUCTION and 'mongodb+srv' in MONGO_URL:
+                client_options.update({
+                    'ssl': True,
+                    'tlsAllowInvalidCertificates': False,
+                    'authSource': 'admin',
+                    'compressors': 'snappy,zlib,zstd'
+                })
+                logger.info("Using Atlas-optimized connection settings")
+            
+            client = MongoClient(MONGO_URL, **client_options)
+            
+            # Test the connection with timeout
             client.admin.command('ping')
-            logger.info("MongoDB connection successful")
+            logger.info("✅ MongoDB connection successful")
             
             # Initialize database and collections
             db = client[DB_NAME]
