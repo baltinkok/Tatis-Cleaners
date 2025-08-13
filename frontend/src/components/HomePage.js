@@ -516,12 +516,12 @@ function HomePage() {
               </div>
               
               <div className="space-y-3">
-                <a
-                  href="/register?role=cleaner"
+                <Link
+                  to="/register?role=cleaner"
                   className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors inline-block"
                 >
                   Apply as Cleaner
-                </a>
+                </Link>
                 <p className="text-xs text-slate-500">
                   Already registered? <Link to="/login" className="text-blue-600 hover:text-blue-700">Sign In</Link>
                 </p>
