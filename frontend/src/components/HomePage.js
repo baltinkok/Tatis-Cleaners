@@ -616,7 +616,6 @@ function HomePage() {
               </div>
             )}
           </Card>
-        )}
 
         {/* Step 2: Cleaner Selection */}
         {currentStep === 2 && (
