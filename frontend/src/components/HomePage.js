@@ -857,8 +857,8 @@ function HomePage() {
                   Special Instructions (Optional)
                 </label>
                 <textarea
-                  value={specialInstructions}
-                  onChange={(e) => setSpecialInstructions(e.target.value)}
+                  value={customerInfo.instructions}
+                  onChange={(e) => setCustomerInfo(prev => ({...prev, instructions: e.target.value}))}
                   placeholder="Any special requests or instructions..."
                   rows={3}
                   className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
