@@ -558,7 +558,15 @@ function HomePage() {
                   <div className="text-slate-400 mb-4">
                     <Loader className="w-8 h-8 animate-spin mx-auto" />
                   </div>
-                  <p className="text-slate-600">Loading services...</p>
+                  <p className="text-slate-600 mb-2">Loading services...</p>
+                  <p className="text-xs text-slate-400">
+                    If this persists, check browser console for errors
+                  </p>
+                  <div className="mt-4 p-4 bg-slate-100 rounded-lg text-xs text-left max-w-md mx-auto">
+                    <div className="font-medium mb-2">Debug Info:</div>
+                    <div>Backend URL: {BACKEND_URL}</div>
+                    <div>Services Count: {Object.keys(services).length}</div>
+                  </div>
                 </div>
               )}
             </div>
