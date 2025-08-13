@@ -819,8 +819,8 @@ function HomePage() {
                 </label>
                 <input
                   type="email"
-                  value={customerEmail}
-                  onChange={(e) => setCustomerEmail(e.target.value)}
+                  value={customerInfo.email}
+                  onChange={(e) => setCustomerInfo(prev => ({...prev, email: e.target.value}))}
                   placeholder="your@email.com"
                   className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                 />
