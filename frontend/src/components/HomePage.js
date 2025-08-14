@@ -663,57 +663,63 @@ function HomePage() {
               <div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-6">Choose Your Cleaner</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {cleaners.map((cleaner) => (
-                    <Card 
-                      key={cleaner.id}
-                      className={`cursor-pointer transition-all ${
-                        selectedCleaner?.id === cleaner.id 
-                          ? 'ring-2 ring-emerald-600 bg-emerald-50' 
-                          : 'hover:shadow-lg'
-                      }`}
-                      onClick={() => setSelectedCleaner(cleaner)}
-                    >
-                      <CardContent className="p-6">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
-                            <User className="w-8 h-8 text-emerald-600" />
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="text-lg font-bold text-slate-900">
-                              {cleaner.name}
-                            </h4>
-                            <div className="flex items-center space-x-2 mb-2">
-                              <div className="flex items-center">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star 
-                                    key={i} 
-                                    className={`w-4 h-4 ${
-                                      i < Math.floor(cleaner.rating) 
-                                        ? 'text-yellow-400 fill-current' 
-                                        : 'text-slate-300'
-                                    }`} 
-                                  />
+                  {cleaners && cleaners.length > 0 ? (
+                    cleaners.map((cleaner) => (
+                      <Card 
+                        key={cleaner.id}
+                        className={`cursor-pointer transition-all ${
+                          selectedCleaner?.id === cleaner.id 
+                            ? 'ring-2 ring-emerald-600 bg-emerald-50' 
+                            : 'hover:shadow-lg'
+                        }`}
+                        onClick={() => setSelectedCleaner(cleaner)}
+                      >
+                        <CardContent className="p-6">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
+                              <User className="w-8 h-8 text-emerald-600" />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="text-lg font-bold text-slate-900">
+                                {cleaner.name}
+                              </h4>
+                              <div className="flex items-center space-x-2 mb-2">
+                                <div className="flex items-center">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star 
+                                      key={i} 
+                                      className={`w-4 h-4 ${
+                                        i < Math.floor(cleaner.rating) 
+                                          ? 'text-yellow-400 fill-current' 
+                                          : 'text-slate-300'
+                                      }`} 
+                                    />
+                                  ))}
+                                </div>
+                                <span className="text-sm text-slate-600">
+                                  {cleaner.rating} ({cleaner.reviews_count} reviews)
+                                </span>
+                              </div>
+                              <p className="text-sm text-slate-600">
+                                {cleaner.experience_years} years experience
+                              </p>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {cleaner.specialties?.slice(0, 3).map((specialty, idx) => (
+                                  <span key={idx} className="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded">
+                                    {specialty}
+                                  </span>
                                 ))}
                               </div>
-                              <span className="text-sm text-slate-600">
-                                {cleaner.rating} ({cleaner.reviews_count} reviews)
-                              </span>
-                            </div>
-                            <p className="text-sm text-slate-600">
-                              {cleaner.experience_years} years experience
-                            </p>
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              {cleaner.specialties?.slice(0, 3).map((specialty, idx) => (
-                                <span key={idx} className="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded">
-                                  {specialty}
-                                </span>
-                              ))}
                             </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    ))
+                  ) : (
+                    <div className="col-span-2 text-center py-8">
+                      <p className="text-slate-600">Loading cleaners...</p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex justify-between mt-8">
                   <Button 
