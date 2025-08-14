@@ -807,9 +807,13 @@ function HomePage() {
                         className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
                       >
                         <option value="">Select your city</option>
-                        {serviceAreas.map(area => (
-                          <option key={area} value={area}>{area}</option>
-                        ))}
+                        {serviceAreas && serviceAreas.length > 0 ? (
+                          serviceAreas.map(area => (
+                            <option key={area} value={area}>{area}</option>
+                          ))
+                        ) : (
+                          <option disabled>Loading areas...</option>
+                        )}
                       </select>
                     </div>
                   </div>
