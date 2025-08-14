@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the new authentication system and user management endpoints in the Tati's Cleaners backend. Please test: 1. Authentication Endpoints (register, login, me) 2. Cleaner Application System (apply, upload-document, initiate-background-check) 3. Dashboard Endpoints (customer/cleaner dashboards, rating, booking acceptance) 4. Authorization Testing (role-based access control, JWT validation)"
+user_problem_statement: "User reported two critical issues: 1) Booking flow problem - after selecting a cleaner, the process incorrectly jumps to FAQ instead of continuing with booking steps, 2) Sign-in session issues - authentication/login functionality not working properly"
 
 backend:
   - task: "User Registration System"
