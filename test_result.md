@@ -131,6 +131,9 @@ backend:
         - working: true
         - agent: "testing"
         - comment: "POST /api/auth/login working correctly. Proper credential validation, password verification, JWT token generation, and error handling for invalid credentials working as expected."
+        - working: true
+        - agent: "testing"
+        - comment: "RETESTED: POST /api/auth/login working perfectly after frontend fixes. Successfully authenticated customer and cleaner users with proper JWT tokens. Invalid credentials properly rejected with 401 status. Password verification and token generation functioning correctly."
 
   - task: "JWT Token Validation"
     implemented: true
