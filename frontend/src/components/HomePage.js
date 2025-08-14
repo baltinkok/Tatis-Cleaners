@@ -604,41 +604,47 @@ function HomePage() {
               <div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-6">Choose Your Service</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {Object.entries(services).map(([serviceType, service]) => (
-                    <Card 
-                      key={serviceType}
-                      className={`cursor-pointer transition-all ${
-                        selectedService === serviceType 
-                          ? 'ring-2 ring-emerald-600 bg-emerald-50' 
-                          : 'hover:shadow-lg'
-                      }`}
-                      onClick={() => setSelectedService(serviceType)}
-                    >
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <h4 className="text-lg font-bold text-slate-900">
-                            {service.name}
-                          </h4>
-                          <div className="text-right">
-                            <div className="text-2xl font-bold text-emerald-600">
-                              ${service.base_price}/hr
+                  {services && Object.entries(services).length > 0 ? (
+                    Object.entries(services).map(([serviceType, service]) => (
+                      <Card 
+                        key={serviceType}
+                        className={`cursor-pointer transition-all ${
+                          selectedService === serviceType 
+                            ? 'ring-2 ring-emerald-600 bg-emerald-50' 
+                            : 'hover:shadow-lg'
+                        }`}
+                        onClick={() => setSelectedService(serviceType)}
+                      >
+                        <CardContent className="p-6">
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="text-lg font-bold text-slate-900">
+                              {service.name}
+                            </h4>
+                            <div className="text-right">
+                              <div className="text-2xl font-bold text-emerald-600">
+                                ${service.base_price}/hr
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <p className="text-slate-600 text-sm mb-4">
-                          {service.description}
-                        </p>
-                        <div className="text-xs text-slate-500">
-                          <strong>What's included:</strong>
-                          <ul className="list-disc pl-5 mt-1">
-                            {service.features.map((feature, idx) => (
-                              <li key={idx}>{feature}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                          <p className="text-slate-600 text-sm mb-4">
+                            {service.description}
+                          </p>
+                          <div className="text-xs text-slate-500">
+                            <strong>What's included:</strong>
+                            <ul className="list-disc pl-5 mt-1">
+                              {service.features && service.features.map((feature, idx) => (
+                                <li key={idx}>{feature}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  ) : (
+                    <div className="col-span-2 text-center py-8">
+                      <p className="text-slate-600">Loading services...</p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex justify-end mt-8">
                   <Button 
