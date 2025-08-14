@@ -287,6 +287,9 @@ backend:
         - working: true
         - agent: "testing"
         - comment: "GET /api/cleaners endpoint working, returns 4 cleaners with proper data structure including Ivon Gamez, Lucia Coronado, Ana Garcia, Jessica Martinez"
+        - working: true
+        - agent: "testing"
+        - comment: "RETESTED: GET /api/cleaners working perfectly after frontend fixes. Returns 4 cleaners with complete profiles: Ivon Gamez (5.0 rating, 9 years), Lucia Coronado (4.9 rating, 3 years), Ana Garcia (4.9 rating, 7 years), Jessica Martinez (4.7 rating, 4 years). All have proper specialties and avatar URLs."
 
   - task: "API Endpoints - Service Areas"
     implemented: true
