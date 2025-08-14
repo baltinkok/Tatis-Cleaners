@@ -116,6 +116,9 @@ backend:
         - working: true
         - agent: "testing"
         - comment: "POST /api/auth/register working perfectly for all roles (customer, cleaner, admin). Proper validation, password hashing, JWT token generation, and duplicate email detection working correctly."
+        - working: true
+        - agent: "testing"
+        - comment: "RETESTED: POST /api/auth/register working excellently after frontend fixes. Successfully registered customer, cleaner, and admin users with proper JWT tokens. Duplicate email detection working (returns 400). All user data properly stored with UUID IDs, password hashing, and role assignment."
 
   - task: "User Login System"
     implemented: true
