@@ -272,6 +272,9 @@ backend:
         - working: true
         - agent: "testing"
         - comment: "GET /api/services endpoint working, returns all service packages with correct pricing structure"
+        - working: true
+        - agent: "testing"
+        - comment: "RETESTED: GET /api/services working perfectly after frontend fixes. Returns all 4 service types (regular_cleaning: $40/hr, deep_cleaning: $45/hr, move_in_out: $70/hr, janitorial_cleaning: $70/hr) with proper structure and pricing."
 
   - task: "API Endpoints - Cleaners"
     implemented: true
