@@ -323,6 +323,9 @@ backend:
         - working: true
         - agent: "testing"
         - comment: "POST /api/bookings working correctly, creates bookings with proper validation, calculates total amounts correctly, stores booking data in database"
+        - working: true
+        - agent: "testing"
+        - comment: "RETESTED: POST /api/bookings working excellently after frontend fixes. Successfully created booking with proper validation (service type, cleaner ID, service area). Total amount calculation correct ($40/hr × 3hrs = $120). Booking stored with UUID, status 'pending_payment', and all required fields."
 
   - task: "Booking Retrieval"
     implemented: true
