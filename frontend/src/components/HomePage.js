@@ -21,10 +21,10 @@ import {
   Briefcase,
   Home
 } from 'lucide-react';
-import { Button } from './ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Input } from './ui/input';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
+import { Button } from './ui/button.jsx';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card.jsx';
+import { Input } from './ui/input.jsx';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion.jsx';
 import { ENV_CONFIG } from '../config/environment';
 
 // Memoize the backend URL to prevent re-renders
