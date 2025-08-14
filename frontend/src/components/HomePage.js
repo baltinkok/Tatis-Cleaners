@@ -568,12 +568,481 @@ function HomePage() {
         </div>
       </section>
 
-      {/* MINIMAL TEST BOOKING SECTION */}
-      <div className="bg-green-500 text-white p-8 text-center" id="book-now">
-        <h1 className="text-4xl font-bold">🟢 BOOKING SECTION IS RENDERING!</h1>
-        <p className="text-xl mt-4">Current Step: {currentStep}</p>
-        <p className="text-lg">If you see this green section, the booking area is working.</p>
-      </div>
+      {/* BOOKING SECTION */}
+      <section className="bg-white py-16" id="book-now">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Book Your Cleaning Service</h2>
+            <p className="text-xl text-slate-600">Choose your service, cleaner, and schedule in just a few steps</p>
+          </div>
+
+          {/* Progress Steps */}
+          <div className="flex justify-center mb-12">
+            <div className="flex items-center space-x-4">
+              {[1, 2, 3, 4, 5].map((step) => (
+                <div key={step} className="flex items-center">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
+                    currentStep >= step 
+                      ? 'bg-emerald-600 text-white' 
+                      : 'bg-slate-200 text-slate-600'
+                  }`}>
+                    {step}
+                  </div>
+                  {step < 5 && (
+                    <div className={`w-16 h-1 mx-2 ${
+                      currentStep > step ? 'bg-emerald-600' : 'bg-slate-200'
+                    }`} />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Step Content */}
+          <div className="bg-slate-50 rounded-xl p-8">
+            {currentStep === 1 && (
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-6">Choose Your Service</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {Object.entries(services).map(([serviceType, service]) => (
+                    <Card 
+                      key={serviceType}
+                      className={`cursor-pointer transition-all ${
+                        selectedService === serviceType 
+                          ? 'ring-2 ring-emerald-600 bg-emerald-50' 
+                          : 'hover:shadow-lg'
+                      }`}
+                      onClick={() => setSelectedService(serviceType)}
+                    >
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="text-lg font-bold text-slate-900">
+                            {service.name}
+                          </h4>
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-emerald-600">
+                              ${service.base_price}/hr
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-slate-600 text-sm mb-4">
+                          {service.description}
+                        </p>
+                        <div className="text-xs text-slate-500">
+                          <strong>What's included:</strong>
+                          <ul className="list-disc pl-5 mt-1">
+                            {service.features.map((feature, idx) => (
+                              <li key={idx}>{feature}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+                <div className="flex justify-end mt-8">
+                  <Button 
+                    onClick={handleNext}
+                    disabled={!selectedService}
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    Next: Choose Cleaner
+                    <ChevronRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {currentStep === 2 && (
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-6">Choose Your Cleaner</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {cleaners.map((cleaner) => (
+                    <Card 
+                      key={cleaner.id}
+                      className={`cursor-pointer transition-all ${
+                        selectedCleaner?.id === cleaner.id 
+                          ? 'ring-2 ring-emerald-600 bg-emerald-50' 
+                          : 'hover:shadow-lg'
+                      }`}
+                      onClick={() => setSelectedCleaner(cleaner)}
+                    >
+                      <CardContent className="p-6">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <User className="w-8 h-8 text-emerald-600" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-lg font-bold text-slate-900">
+                              {cleaner.name}
+                            </h4>
+                            <div className="flex items-center space-x-2 mb-2">
+                              <div className="flex items-center">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star 
+                                    key={i} 
+                                    className={`w-4 h-4 ${
+                                      i < Math.floor(cleaner.rating) 
+                                        ? 'text-yellow-400 fill-current' 
+                                        : 'text-slate-300'
+                                    }`} 
+                                  />
+                                ))}
+                              </div>
+                              <span className="text-sm text-slate-600">
+                                {cleaner.rating} ({cleaner.reviews_count} reviews)
+                              </span>
+                            </div>
+                            <p className="text-sm text-slate-600">
+                              {cleaner.experience_years} years experience
+                            </p>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {cleaner.specialties?.slice(0, 3).map((specialty, idx) => (
+                                <span key={idx} className="px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded">
+                                  {specialty}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+                <div className="flex justify-between mt-8">
+                  <Button 
+                    variant="outline" 
+                    onClick={handleBack}
+                    className="border-slate-300"
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-2" />
+                    Back
+                  </Button>
+                  <Button 
+                    onClick={handleNext}
+                    disabled={!selectedCleaner}
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    Next: Schedule
+                    <ChevronRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {currentStep === 3 && (
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-6">Schedule Your Cleaning</h3>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Date and Time Selection */}
+                  <div>
+                    <h4 className="text-lg font-medium text-slate-900 mb-4">Select Date & Time</h4>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                          Preferred Date
+                        </label>
+                        <Input
+                          type="date"
+                          min={new Date().toISOString().split('T')[0]}
+                          value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
+                          onChange={(e) => setSelectedDate(new Date(e.target.value))}
+                          className="w-full"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                          Preferred Time
+                        </label>
+                        <select 
+                          value={selectedTime}
+                          onChange={(e) => setSelectedTime(e.target.value)}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        >
+                          <option value="">Select time</option>
+                          {timeSlots.map(time => (
+                            <option key={time} value={time}>{time}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-2">
+                          Duration (hours)
+                        </label>
+                        <select 
+                          value={selectedHours}
+                          onChange={(e) => setSelectedHours(parseInt(e.target.value))}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        >
+                          {[1, 2, 3, 4, 5, 6, 7, 8].map(hour => (
+                            <option key={hour} value={hour}>{hour} hour{hour > 1 ? 's' : ''}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Service Area Selection */}
+                  <div>
+                    <h4 className="text-lg font-medium text-slate-900 mb-4">Service Area</h4>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        City
+                      </label>
+                      <select 
+                        value={selectedArea}
+                        onChange={(e) => setSelectedArea(e.target.value)}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      >
+                        <option value="">Select your city</option>
+                        {serviceAreas.map(area => (
+                          <option key={area} value={area}>{area}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between mt-8">
+                  <Button 
+                    variant="outline" 
+                    onClick={handleBack}
+                    className="border-slate-300"
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-2" />
+                    Back
+                  </Button>
+                  <Button 
+                    onClick={handleNext}
+                    disabled={!selectedDate || !selectedTime || !selectedArea}
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    Next: Details
+                    <ChevronRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {currentStep === 4 && (
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-6">Contact Details</h3>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Full Name *
+                      </label>
+                      <Input
+                        value={customerInfo.name}
+                        onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
+                        placeholder="Enter your full name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Email Address *
+                      </label>
+                      <Input
+                        type="email"
+                        value={customerInfo.email}
+                        onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})}
+                        placeholder="Enter your email"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Phone Number *
+                      </label>
+                      <Input
+                        type="tel"
+                        value={customerInfo.phone}
+                        onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
+                        placeholder="Enter your phone number"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Service Address *
+                      </label>
+                      <Input
+                        value={customerInfo.address}
+                        onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})}
+                        placeholder="Enter full address"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Special Instructions
+                      </label>
+                      <textarea
+                        value={customerInfo.instructions}
+                        onChange={(e) => setCustomerInfo({...customerInfo, instructions: e.target.value})}
+                        placeholder="Any special requests or instructions..."
+                        rows={4}
+                        className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between mt-8">
+                  <Button 
+                    variant="outline" 
+                    onClick={handleBack}
+                    className="border-slate-300"
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-2" />
+                    Back
+                  </Button>
+                  <Button 
+                    onClick={handleNext}
+                    disabled={!customerInfo.name || !customerInfo.email || !customerInfo.phone || !customerInfo.address}
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    Review Booking
+                    <ChevronRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {currentStep === 5 && (
+              <div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-6">Review & Confirm</h3>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Booking Summary */}
+                  <div className="space-y-6">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Service Details</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Service:</span>
+                          <span className="font-medium">{services[selectedService]?.name}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Cleaner:</span>
+                          <span className="font-medium">{selectedCleaner?.name}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Date:</span>
+                          <span className="font-medium">{selectedDate?.toDateString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Time:</span>
+                          <span className="font-medium">{selectedTime}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Duration:</span>
+                          <span className="font-medium">{selectedHours} hour{selectedHours > 1 ? 's' : ''}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Location:</span>
+                          <span className="font-medium">{selectedArea}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Contact Information</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Name:</span>
+                          <span className="font-medium">{customerInfo.name}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Email:</span>
+                          <span className="font-medium">{customerInfo.email}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">Phone:</span>
+                          <span className="font-medium">{customerInfo.phone}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-600">Address:</span>
+                          <p className="font-medium mt-1">{customerInfo.address}</p>
+                        </div>
+                        {customerInfo.instructions && (
+                          <div>
+                            <span className="text-slate-600">Instructions:</span>
+                            <p className="font-medium mt-1">{customerInfo.instructions}</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Pricing */}
+                  <div>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Pricing Summary</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="flex justify-between">
+                          <span className="text-slate-600">
+                            {services[selectedService]?.name} × {selectedHours} hour{selectedHours > 1 ? 's' : ''}
+                          </span>
+                          <span className="font-medium">
+                            ${services[selectedService]?.base_price} × {selectedHours}
+                          </span>
+                        </div>
+                        <div className="border-t pt-4">
+                          <div className="flex justify-between text-xl font-bold">
+                            <span>Total:</span>
+                            <span className="text-emerald-600">${calculateTotal()}</span>
+                          </div>
+                        </div>
+                        <p className="text-sm text-slate-500 mt-4">
+                          * Payment will be processed securely via Stripe
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                <div className="flex justify-between mt-8">
+                  <Button 
+                    variant="outline" 
+                    onClick={handleBack}
+                    className="border-slate-300"
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-2" />
+                    Back
+                  </Button>
+                  <Button 
+                    onClick={handleBooking}
+                    disabled={isLoading}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-lg px-8 py-3"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader className="w-5 h-5 mr-2 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="w-5 h-5 mr-2" />
+                        Book & Pay ${calculateTotal()}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
 
       {/* FAQ Section */}
       <section className="bg-slate-50 py-16">
